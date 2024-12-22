@@ -4,9 +4,6 @@
 *.iws
 *.ipr
 
-# Ignore .vscode folder
-.vscode/
-
 # Maven target directory
 target/
 
