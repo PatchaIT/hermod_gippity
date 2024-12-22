@@ -62,11 +62,10 @@ I know there are lot of new AI specialized to the needs of a developer, but
 
 ## In Shorts
 
-* Project: hormod_gippity
+* Project: Hermod Gippity
 * Version: 0.0.1-SNAPSHOT
 * Description: Will send message to JMS queue
 * Change: First implementation
-* Services: JMS messages
 * Overlays: None
 * Made By: @PatchaIT
 * Update Date: 2024/12/22
