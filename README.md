@@ -62,7 +62,7 @@ I know there are lot of new AI specialized to the needs of a developer, but
   purpose AI.
 
 Chat highlights with the AI:
- [AI Chat Highlights for hermod_gippity Project](https://gist.github.com/PatchaIT/018625b7f192eb3494882ad85ae7d6fd)
+ [AI Chat Highlights for hermod_gippity Project](https://gist.github.com/PatchaIT/018625b7f192eb3494882ad85ae7d6fd#file-aihighlights_hermodgippity-md)
 
 ## In Shorts
 
