@@ -33,11 +33,12 @@ Second: this is an experiment, too.
   Yes, I'm talking about AI.
   But not like I'll just tell AI: `I want an app which does this. Please
     do it for me now!`, but I'll face the AI almost like a real coworker.
-  Well a cowoker whom doesn't drink coffee, but that's ok.
+  Well a cowoker whom doesn't drink coffee, but that's ok.  
+  I'll refer her as female, named Chantal.
 
 We already decided something "together". Which means I proposed some
-  alternative options to choose from, and she (I'll refer her as female)
-  helped me to make the best choice.
+  alternative options to choose from, and she helped me to make the
+  best choice.
 
 For instance: `I want to do X and I have Y necesseities, better I adopt
   Java 17 or Java 21? Eclipse or IntelliJ?`
@@ -59,6 +60,9 @@ If you're smart enough, you'll guess which AI I chose, but the second part
 I know there are lot of new AI specialized to the needs of a developer, but
   on purpose I wanted instaed to try the experiment with a more generical
   purpose AI.
+
+Chat highlights with the AI:
+ [AI Chat Highlights for hermod_gippity Project](https://gist.github.com/PatchaIT/018625b7f192eb3494882ad85ae7d6fd#file-aihighlights_hermodgippity-md)
 
 ## In Shorts
 
