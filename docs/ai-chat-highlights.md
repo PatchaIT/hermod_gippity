@@ -227,30 +227,30 @@ IntelliJ IDEA handles project configuration files differently and doesn’t
 However, there are some precautions you can take to keep your repository clean:
 
 1. Add IntelliJ-specific configuration files and folders to your `.gitignore`.
-These include:
+    These include:
 
-  ```plaintext
-  .idea/
-  *.iml
-  out/
-  ```
+    ```plaintext
+    .idea/
+    *.iml
+    out/
+    ```
 
-  This will prevent Git from tracking the IDE configuration files.
+    This will prevent Git from tracking the IDE configuration files.
 
 2. Continue using an organized directory structure.
-  You can keep your project in the same folder you clone it to,
-    and IntelliJ IDEA will handle its configuration files in the `.idea`
-    folder without interfering with the source code.
+    You can keep your project in the same folder you clone it to,
+      and IntelliJ IDEA will handle its configuration files in the `.idea`
+      folder without interfering with the source code.
 
 3. For compiled files and generated packages, you can also add the `target`
-    folder to your `.gitignore`:
+      folder to your `.gitignore`:
 
-  ```plaintext
-  target/
-  ```
+    ```plaintext
+    target/
+    ```
 
-  This will ensure that temporary and compiled files are not tracked in your
-    repository.
+    This will ensure that temporary and compiled files are not tracked in your
+      repository.
 
 > **PatchaIT**:  
 For the `Compiled class file` and `Package Files` sections, wouldn’t it be
