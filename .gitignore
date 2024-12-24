@@ -7,6 +7,9 @@
 # Maven target directory
 target/
 
+# Maven shader pluing
+/dependency-reduced-pom.xml
+
 # Compiled class file
 *.class
 
