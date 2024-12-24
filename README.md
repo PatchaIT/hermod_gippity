@@ -65,14 +65,14 @@ I know there are lot of new AI specialized to the needs of a developer, but
   purpose AI.
 
 Chat highlights with the AI:
- [AI Chat Highlights for hermod_gippity Project](https://gist.github.com/PatchaIT/018625b7f192eb3494882ad85ae7d6fd#file-aihighlights_hermodgippity-md)
+  [AI Chat Highlights for hermod_gippity Project](docs/ai-chat-highlights.md)
 
 ## In Shorts
 
 * Project: Hermod Gippity
-* Version: 0.0.1-SNAPSHOT
 * Version: 0.0.1 - Skeleton
 * Description: Will send message to JMS queue, but at the moment does nothing.
+* Change: First implementation
 * Overlays: None
 * Made By: @PatchaIT
 * Update Date: 2024/12/22
@@ -81,8 +81,8 @@ Chat highlights with the AI:
 
 ## Changelog
 
-* 2025/01/xx v0.0.1
-  * First release
+* 2024/12/24 v0.0.1 - Skeleton
+  * Skeleton Upload and Update
 
 ## Implementing in v0.0.1
 
