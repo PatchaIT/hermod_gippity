@@ -9,11 +9,13 @@ Send message to JMS queue
 
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [It is what it is](#it-is-what-it-is)
-  * [It is an experiment](#it-is-an-experiment)
-* [In Shorts](#in-shorts)
-* [Changelog](#changelog)
+* [hermod\_gippity](#hermod_gippity)
+  * [Table of Contents](#table-of-contents)
+  * [About The Project](#about-the-project)
+    * [It is what it is](#it-is-what-it-is)
+    * [It is an experiment](#it-is-an-experiment)
+  * [In Shorts](#in-shorts)
+  * [Changelog](#changelog)
 
 ## About The Project
 
@@ -62,13 +64,13 @@ I know there are lot of new AI specialized to the needs of a developer, but
   purpose AI.
 
 Chat highlights with the AI:
- [AI Chat Highlights for hermod_gippity Project](https://gist.github.com/PatchaIT/018625b7f192eb3494882ad85ae7d6fd#file-aihighlights_hermodgippity-md)
+  [AI Chat Highlights for hermod_gippity Project](docs/ai-chat-highlights.md)
 
 ## In Shorts
 
 * Project: Hermod Gippity
-* Version: 0.0.1-SNAPSHOT
-* Description: Will send message to JMS queue
+* Version: 0.0.1 - Skeleton
+* Description: Will send message to JMS queue, but at the moment does nothing.
 * Change: First implementation
 * Overlays: None
 * Made By: @PatchaIT
@@ -76,5 +78,5 @@ Chat highlights with the AI:
 
 ## Changelog
 
-* 2024/12/22 v0.0.1 - Snapshot
-  * Snapshot Start
+* 2024/12/24 v0.0.1 - Skeleton
+  * Skeleton Upload
