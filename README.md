@@ -70,9 +70,9 @@ Chat highlights with the AI:
 ## In Shorts
 
 * Project: Hermod Gippity
-* Version: 0.0.1-SNAPSHOT
 * Version: 0.0.1 - Skeleton
 * Description: Will send message to JMS queue, but at the moment does nothing.
+* Change: First implementation
 * Overlays: None
 * Made By: @PatchaIT
 * Update Date: 2024/12/22
