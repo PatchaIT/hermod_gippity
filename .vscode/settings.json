@@ -15,5 +15,6 @@
     "**/CVS": true,
     "**/.DS_Store": true
   },
-  "files.writable": true
+  "files.writable": true,
+  "markdown.extension.toc.unorderedList.marker": "*",
 }

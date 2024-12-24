@@ -3,17 +3,20 @@
 [![development status | 1 - planning](https://img.shields.io/badge/development_status-1_--_planning-yellow)](https://pypi.org/classifiers/)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![release](https://img.shields.io/github/v/release/PatchaIT/hermod_gippity)
-[![next](https://img.shields.io/badge/next-v0.0.1-yellow)](https://github.com/PatchaIT/greetings/tree/greetings_v0.0.1)
+[![next](https://img.shields.io/badge/next-v0.0.1-yellow)](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.1)
 
 Send message to JMS queue
 
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [It is what it is](#it-is-what-it-is)
-  * [It is an experiment](#it-is-an-experiment)
-* [In Shorts](#in-shorts)
-* [Changelog](#changelog)
+* [hermod\_gippity](#hermod_gippity)
+  * [Table of Contents](#table-of-contents)
+  * [About The Project](#about-the-project)
+    * [It is what it is](#it-is-what-it-is)
+    * [It is an experiment](#it-is-an-experiment)
+  * [In Shorts](#in-shorts)
+  * [Changelog](#changelog)
+  * [Implementing in v0.0.1](#implementing-in-v001)
 
 ## About The Project
 
@@ -68,13 +71,32 @@ Chat highlights with the AI:
 
 * Project: Hermod Gippity
 * Version: 0.0.1-SNAPSHOT
-* Description: Will send message to JMS queue
-* Change: First implementation
+* Version: 0.0.1 - Skeleton
+* Description: Will send message to JMS queue, but at the moment does nothing.
 * Overlays: None
 * Made By: @PatchaIT
 * Update Date: 2024/12/22
 
+* [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity&branch=main)
+
 ## Changelog
 
-* 2024/12/22 v0.0.1 - Snapshot
-  * Snapshot Start
+* 2025/01/xx v0.0.1
+  * First release
+
+## Implementing in v0.0.1
+
+Version v0.0.1 is a work in progress in the branch
+  [hermod_gippity_v0.0.1](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.1).
+
+Up to now the following is implemented:
+
+* Defined Folder Structure
+* Stub main class (up to now it only tells you if you put an argument or not)
+* Stub jUnit test (actually tests the "nothing" the main does)
+* Implemented maven-shade-plugin to generate a fat jar
+* Implemented maven-assembly-plugin to generate a custom named executable jar
+* Implemented SonarCloud to check code quality:
+  [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity&branch=main)
+* Implemented a logger (but still writes on console)
+* Adopted the most recent stable versions of all dependencies
