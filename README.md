@@ -91,7 +91,7 @@ Version v0.0.1 is a work in progress in the branch
 
 Up to now the following is implemented:
 
-* Defined Folder Structure
+* Initial folder structure definition
 * Stub main class (up to now it only tells you if you put an argument or not)
 * Stub jUnit test (actually tests the "nothing" the main does)
 * Implemented maven-shade-plugin to generate a fat jar
@@ -100,3 +100,24 @@ Up to now the following is implemented:
   [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity&branch=main)
 * Implemented a logger (but still writes on console)
 * Adopted the most recent stable versions of all dependencies
+
+Under implementation:  
+(Note: This is a non-exhaustive list compiled into spare time.
+  I'm in a hurry to close the 0.0.1, so I don't wanna dedicate too much time on lists.
+  But I also wanna give some feedback that I'm still alive. 😊 And the project too.)  
+(Note 2: It is possible I'll commit code in 0.0.1 dedicate branch soon after SonarQube coverate
+  and soon before markdown Documentation. But the pull into the main will be only after docs.)
+
+* [x] Fully (untested) implementation of a message send
+* [x] Fully defined folder structure
+* [x] Code and classes implemented adopting a clear Separation of Concerns
+* [ ] Full unit tests coverage on SonarQube (jUnit5 + Mockito) <- doing right now
+* [x] Documentation (javadoc)
+* [ ] Documentation (markdown doc files)
+* [ ] GitHub Workflow to share the artifact on Release <- almost done
+
+Foreseen for future releases (not 0.0.1):
+
+* Response message features
+* (Maybe) A modality simulating a dummy JMS message receiver which only answers Ack
+* (Dream) Graphic UI mode
