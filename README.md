@@ -17,6 +17,9 @@ Send message to JMS queue
   * [In Shorts](#in-shorts)
   * [Changelog](#changelog)
   * [Implementing in v0.0.1](#implementing-in-v001)
+    * [Implemented into dedicated branch](#implemented-into-dedicated-branch)
+    * [Under implementation in my local environment](#under-implementation-in-my-local-environment)
+    * [Foreseen for future releases (not under development)](#foreseen-for-future-releases-not-under-development)
 
 ## About The Project
 
@@ -89,7 +92,7 @@ Chat highlights with the AI:
 Version v0.0.1 is a work in progress in the branch
   [hermod_gippity_v0.0.1](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.1).
 
-Up to now the following is implemented:
+### Implemented into dedicated branch
 
 * Initial folder structure definition
 * Stub main class (up to now it only tells you if you put an argument or not)
@@ -101,23 +104,28 @@ Up to now the following is implemented:
 * Implemented a logger (but still writes on console)
 * Adopted the most recent stable versions of all dependencies
 
-Under implementation:  
-(Note: This is a non-exhaustive list compiled into spare time.
-  I'm in a hurry to close the 0.0.1, so I don't wanna dedicate too much time on lists.
-  But I also wanna give some feedback that I'm still alive. 😊 And the project too.)  
-(Note 2: It is possible I'll commit code in 0.0.1 dedicate branch soon after SonarQube coverate
-  and soon before markdown Documentation. But the pull into the main will be only after docs.)
+### Under implementation in my local environment
+
+Those starting with ! are those I'm currently working on.
 
 * [x] Fully (untested) implementation of a message send
 * [x] Fully defined folder structure
 * [x] Code and classes implemented adopting a clear Separation of Concerns
-* [ ] Full unit tests coverage on SonarQube (jUnit5 + Mockito) <- doing right now
+* [ ] ! Full unit tests coverage on SonarQube (jUnit5 + Mockito)
 * [x] Documentation (javadoc)
 * [ ] Documentation (markdown doc files)
-* [ ] GitHub Workflow to share the artifact on Release <- almost done
+* [ ] ! GitHub Workflow to share the artifact on Release
 
-Foreseen for future releases (not 0.0.1):
+Note: This is a non-exhaustive list compiled in spare time.
+  I'm in a hurry to close the 0.0.1, so I don't wanna dedicate too much time on lists.
+  But I also wanna give some feedback that I'm still alive. 😊 And the project too.
+
+Note 2: It is possible I'll commit code in 0.0.1 dedicage branch soon after SonarQube coverate
+  and soon before markdown Documentation. But the pull into the main will be only after docs.
+
+### Foreseen for future releases (not under development)
 
 * Response message features
 * (Maybe) A modality simulating a dummy JMS message receiver which only answers Ack
+* Automated integration tests
 * (Dream) Graphic UI mode
