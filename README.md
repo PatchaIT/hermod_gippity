@@ -1,3 +1,4 @@
+<!-- omit from toc -->
 # hermod_gippity
 
 [![development status | 2 - pre-alpha](https://img.shields.io/badge/development_status-2_--_pre--alpha-cyan)](https://pypi.org/classifiers/)
@@ -9,17 +10,16 @@ Send message to JMS queue
 
 ## Table of Contents
 
-* [hermod\_gippity](#hermod_gippity)
-  * [Table of Contents](#table-of-contents)
-  * [About The Project](#about-the-project)
-    * [It is what it is](#it-is-what-it-is)
-    * [It is an experiment](#it-is-an-experiment)
-  * [In Shorts](#in-shorts)
-  * [Changelog](#changelog)
-  * [Implementing in v0.0.1](#implementing-in-v001)
-    * [Implemented into dedicated branch](#implemented-into-dedicated-branch)
-    * [Under implementation in my local environment](#under-implementation-in-my-local-environment)
-    * [Foreseen for future releases (not under development)](#foreseen-for-future-releases-not-under-development)
+* [Table of Contents](#table-of-contents)
+* [About The Project](#about-the-project)
+  * [It is what it is](#it-is-what-it-is)
+  * [It is an experiment](#it-is-an-experiment)
+* [In Shorts](#in-shorts)
+* [Changelog](#changelog)
+* [Implementing in v0.0.1](#implementing-in-v001)
+  * [Implemented into dedicated branch](#implemented-into-dedicated-branch)
+  * [Under implementation in my local environment](#under-implementation-in-my-local-environment)
+  * [Foreseen for future releases (not under development)](#foreseen-for-future-releases-not-under-development)
 
 ## About The Project
 
