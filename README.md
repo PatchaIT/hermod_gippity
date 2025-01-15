@@ -120,7 +120,7 @@ Note: This is a non-exhaustive list compiled in spare time.
   I'm in a hurry to close the 0.0.1, so I don't wanna dedicate too much time on lists.
   But I also wanna give some feedback that I'm still alive. 😊 And the project too.
 
-Note 2: It is possible I'll commit code in 0.0.1 dedicage branch soon after SonarQube coverate
+Note 2: It is possible I'll commit code in 0.0.1 dedicate branch soon after SonarQube coverage
   and soon before markdown Documentation. But the pull into the main will be only after docs.
 
 ### Foreseen for future releases (not under development)
