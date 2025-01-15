@@ -114,7 +114,7 @@ Those starting with ! are those I'm currently working on.
 * [ ] ! Full unit tests coverage on SonarQube (jUnit5 + Mockito)
 * [x] Documentation (javadoc)
 * [ ] Documentation (markdown doc files)
-* [ ] ! GitHub Workflow to share the artifact on Release
+* [x] GitHub Workflow to share the artifact on Release
 
 Note: This is a non-exhaustive list compiled in spare time.
   I'm in a hurry to close the 0.0.1, so I don't wanna dedicate too much
@@ -129,6 +129,6 @@ But the pull into the main will be only after docs.
 ### Foreseen for future releases (not under development)
 
 * Response message features
-* (Maybe) A modality simulating a dummy JMS message receiver which only answers Ack
+* (Maybe) A modality simulating a dummy JMS message receiver answering only Ack
 * Automated integration tests
 * (Dream) Graphic UI mode
