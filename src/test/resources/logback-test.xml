@@ -1,0 +1,21 @@
+<configuration>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<logger name="it.patcha.hermod.gpt" level="DEBUG" additivity="false">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="org.springframework" level="WARN" />
+	<logger name="org.apache.activemq" level="WARN" />
+
+	<root level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+</configuration>

@@ -10,32 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout del codice sorgente
+      # Checkout source code
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Configurazione di Java
+      # Java configuration
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17 # Modifica con la versione Java che usi (es. 11 o 17)
+          java-version: 17
 
-      # Costruzione dell'artifact JAR
+      # JAR artifact building
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn -e clean package
 
-      # Visualizza i file generati (opzionale, per debugging)
+      # List generated files (debugging)
       - name: List target directory
-        run: ls -lh target/
+        run: ls -lhtr target/
 
-      # Zippa l'artifact (opzionale, se vuoi zippare il file JAR)
+      # Zip artifact
       - name: Zip JAR file
-        run: zip hermod_gippity-${{ github.ref_name }}.zip target/*.jar
+        run: zip hermod-gippity.jar target/*.jar
 
-      # Carica il file come asset nella release
+      # Upload artifact on release
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            hermod_gippity-${{ github.ref_name }}.zip
+            hermod-gippity.zip

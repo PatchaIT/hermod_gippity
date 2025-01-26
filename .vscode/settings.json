@@ -17,4 +17,5 @@
   },
   "files.writable": true,
   "markdown.extension.toc.unorderedList.marker": "*",
+  "java.compile.nullAnalysis.mode": "disabled",
 }

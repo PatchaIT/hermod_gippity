@@ -1,3 +1,4 @@
+<!-- omit from toc -->
 # AI Chat Highlights
 
 [Go to Table of Contents](#table-of-contents)
@@ -16,7 +17,7 @@ Hermes was the messenger deity, right? Are there similar deities in other
 
 **Chantal:**  
 Yes, Hermes was the messenger of the gods in Greek mythology.
-  Other similar deities include:
+Other similar deities include:
 
 * Mercury (Roman mythology): Equivalent to Hermes, a messenger god.
 * Thoth (Egyptian mythology): God of writing, magic, wisdom, and the moon,
@@ -370,21 +371,134 @@ These structures will help us keep our project well-organized and easy
 
 ---
 
+### Evaluating Lightweight Code Quality Tools
+
+> **PatchaIT:**  
+I would like to integrate SonarQube (or alternatives like SonarLint) into
+  my project from the start to ensure code quality with checks for coverage,
+  code smells, security, etc.
+However, since it's a small open-source tool, I'd like to do it in the least
+  complicated way possible.
+Any suggestions for a "lightweight" and "accessible" solution for a small
+  project like ours?
+
+**Chantal:**  
+For a small open-source project like hermod_gippity, you have a few options
+  to integrate code quality tools in a lightweight manner:
+
+* **SonarCloud**: This is a cloud-based version of SonarQube. It is free for
+      open-source projects and integrates well with GitHub.
+    It requires minimal setup and no local server.
+* **SonarLint**: This is a lightweight IDE extension that provides real-time
+      feedback on code quality as you write code.
+    It’s easy to set up and works locally without needing a server.
+* **Local SonarQube Server**: This involves running a SonarQube server locally
+    or on a private server.
+  It gives you full control but requires more setup and maintenance.
+
+Considering your project is open-source, SonarCloud might be the best option
+  due to its simplicity and free tier for open-source projects.
+SonarLint is also a great choice for immediate feedback during development.
+
+> **PatchaIT:**  
+>I have some questions:
+>
+> 1. Regarding the open-source aspect of the project, if I adopt one of these
+    solutions, will it be a problem for anyone who forks my project and wants
+    to build it?
+  With local SonarQube, do they also need to activate it locally?
+  With SonarCloud, is there a risk to my profile integrity or that forkers
+    need to create their profiles?
+  Are there similar issues with SonarLint?
+> 2. With local SonarQube, do I need to install or configure something on
+    the system to allow Sonar to respond with a website on port 9000?
+
+**Chantal:**  
+
+1. **Local SonarQube**: Anyone who forks your project would need to set up
+      and run SonarQube locally if they want to use it. This could be a
+      barrier for some contributors.  
+   **SonarCloud**: Contributors would not affect your SonarCloud profile,
+      but they would need their own SonarCloud accounts to analyze their forks.
+    This might be less convenient for some.  
+   **SonarLint**: This is local to the developer's IDE and doesn't require
+      any server setup. It's the most straightforward option for individual
+      developers.
+
+2. **Local SonarQube**: Yes, you need to install SonarQube on your local
+      machine or a server. It will run as a web service, usually on port 9000
+      by default.
+    This involves downloading SonarQube, running the server, and configuring
+      your project to connect to this local server.
+
+> **PatchaIT:**  
+I could create a separate profile for when Sonar is used so that those who
+  fork the project can choose not to use it if they don't want to.
+
+**Chantal:**  
+Yes, creating a separate Maven profile for Sonar is a good approach.
+This way, users can opt in to use SonarQube or SonarCloud if they want,
+  without affecting the default build process.
+
+---
+
+## 2025-01-14
+
+### Choosing Colors for Development Status Levels
+
+#### Matching Colors to Status
+
+> **PatchaIT:**  
+> What colors would you assign to these development statuses,
+    or what are the usual ones?  
+> (Assuming "planning" is yellow, "production/stable" is green,
+    and "inactive" is orange.)  
+> I'm using `img.shields.io` to create color-coded badges and prefer
+    using named colors rather than hex codes.
+>
+> 1. Development Status :: 1 - planning
+> 2. Development Status :: 2 - pre-alpha
+> 3. Development Status :: 3 - alpha
+> 4. Development Status :: 4 - beta
+> 5. Development Status :: 5 - production/stable
+> 6. Development Status :: 6 - mature
+> 7. Development Status :: 7 - inactive
+
+**Chantal:**  
+Using named colors is a practical and elegant choice, especially with
+  `img.shields.io`, which supports many standard color names.
+It ensures readability and simplicity while avoiding the complexity
+  of managing hex codes.  
+Here are my suggestions, based on common practices:
+
+1. **Planning**: `yellow`
+2. **Pre-Alpha**: `cyan`
+3. **Alpha**: `turquoise`
+4. **Beta**: `blue`
+5. **Production/Stable**: `green`
+6. **Mature**: `darkgreen`
+7. **Inactive**: `orange`
+
+---
+
 ## Table of Contents
 
-* [AI Chat Highlights](#ai-chat-highlights)
-  * [2024-12-22](#2024-12-22)
-    * [Defining the Project Name](#defining-the-project-name)
-      * [Choosing the Deity](#choosing-the-deity)
-      * [Choosing the Distinctive Postfix](#choosing-the-distinctive-postfix)
-      * [Summary](#summary)
-    * [Choosing the Java Version](#choosing-the-java-version)
-      * [Conclusion](#conclusion)
-  * [2024-12-23](#2024-12-23)
-    * [IDE Selection](#ide-selection)
-  * [2024-12-24](#2024-12-24)
-    * [Best Practices for Project Folder Structure](#best-practices-for-project-folder-structure)
-      * [General Project Structure](#general-project-structure)
-        * [Folder Details](#folder-details)
-        * [Example for Java Projects](#example-for-java-projects)
-  * [Table of Contents](#table-of-contents)
+* [2024-12-22](#2024-12-22)
+  * [Defining the Project Name](#defining-the-project-name)
+    * [Choosing the Deity](#choosing-the-deity)
+    * [Choosing the Distinctive Postfix](#choosing-the-distinctive-postfix)
+    * [Summary](#summary)
+  * [Choosing the Java Version](#choosing-the-java-version)
+    * [Conclusion](#conclusion)
+* [2024-12-23](#2024-12-23)
+  * [IDE Selection](#ide-selection)
+* [2024-12-24](#2024-12-24)
+  * [Best Practices for Project Folder Structure](#best-practices-for-project-folder-structure)
+    * [General Project Structure](#general-project-structure)
+      * [Folder Details](#folder-details)
+      * [Example for Java Projects](#example-for-java-projects)
+  * [Evaluating Lightweight Code Quality Tools](#evaluating-lightweight-code-quality-tools)
+* [2025-01-14](#2025-01-14)
+  * [Choosing Colors for Development Status Levels](#choosing-colors-for-development-status-levels)
+    * [Matching Colors to Status](#matching-colors-to-status)
+* [Table of Contents](#table-of-contents)

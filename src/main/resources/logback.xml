@@ -1,18 +1,29 @@
 <configuration>
 
-	<!-- Appender per la console -->
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
 
-	<!-- Logger di livello INFO -->
-	<logger name="it.patcha.hermod.gpt" level="INFO" additivity="false">
-		<appender-ref ref="CONSOLE" />
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>hermod_gippity.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- File name pattern -->
+			<fileNamePattern>logs/%d{yyyyMM}/hermod_gippity_%d{yyyyMMdd_HHmmss_SSS}.log.zip</fileNamePattern>
+			<maxFileSize>25MB</maxFileSize>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<logger name="it.patcha.hermod.gpt" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
 	</logger>
 
-	<!-- Root logger per logging globale -->
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 	</root>
