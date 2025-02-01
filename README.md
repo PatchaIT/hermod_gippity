@@ -109,9 +109,9 @@ Version v0.0.1 is a work in progress in the branch
 
 Those starting with ! are those I'm currently working on.
 
-* [ ] ! SonarCloud Security Rate (now B)
-* [ ] ! SonarCloud Reliability Rate (now E)
-* [ ] ! Full unit tests coverage on SonarQube (now 84%)
+* [x] SonarCloud Security Rate (now B)
+* [x] SonarCloud Reliability Rate (now E)
+* [ ] ! Full unit tests coverage on SonarQube (versioned 84%, local 88%)
 * [ ] Completing markdown documentation under doc
 
 Note: It is possible I'll commit code in 0.0.1 dedicated branch soon after
