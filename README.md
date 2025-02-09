@@ -111,8 +111,8 @@ Those starting with ! are those I'm currently working on.
 
 * [x] SonarCloud Security Rate (was B)
 * [x] SonarCloud Reliability Rate (was E)
-* [ ] ! Replace @Autowire adoption with Lombok's @RequiredArgsConstructor and align jUnit tests
-* [ ] ! Adopting Lombok's @Getter and @Setter in Beans and Exceptions
+* [x] Replace @Autowire adoption with Lombok's @RequiredArgsConstructor and align jUnit tests
+* [x] Adopting Lombok's @Getter and @Setter in Beans and Exceptions
 * [ ] ! SonarCloud issues (was 2 Blk, 5 High, 22 Med, 30 Low, 1 Info) (local 12 Med, 28 Low)
 * [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 88%)
 * [ ] Completing markdown documentation under doc
