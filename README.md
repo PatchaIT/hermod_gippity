@@ -115,10 +115,8 @@ Those starting with ! are those I'm currently working on.
         and align jUnit tests
 * [x] Adopting Lombok's @Getter and @Setter in Beans and Exceptions
 * [x] SonarCloud issues (was 2 Blk, 5 High, 22 Med, 30 Low, 1 Info)
-        (local 8 Med)
-* [ ] ! Splitting a bit unit test methods
-        (will also solve Sonar's remaining 8 medium issues,
-        they're all about too complex unit test methods)
+        (local 0)
+* [ ] ! Splitting unit test methods
 * [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 88%)
 * [ ] Completing markdown documentation under doc
 
