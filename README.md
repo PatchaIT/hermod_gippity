@@ -109,14 +109,15 @@ Version v0.0.1 is a work in progress in the branch
 
 Those starting with ! are those I'm currently working on.
 
-* [x] SonarCloud Security Rate (was B)
-* [x] SonarCloud Reliability Rate (was E)
+* [x] SonarCloud Security Rate A (was B)
+* [x] SonarCloud Reliability Rate A (was E)
 * [x] Replace @Autowire adoption with Lombok's @RequiredArgsConstructor
         and align jUnit tests
 * [x] Adopting Lombok's @Getter and @Setter in Beans and Exceptions
 * [x] SonarCloud issues (was 2 Blk, 5 High, 22 Med, 30 Low, 1 Info)
+* [x] Jacoco repots saved in HTML in Dark Mode colors locally
 * [ ] ! Splitting unit test methods
-* [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 89.3%)
+* [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 91.1%)
 * [ ] Completing markdown documentation under doc
 
 Note: It is possible I'll commit code in 0.0.1 dedicated branch soon after
