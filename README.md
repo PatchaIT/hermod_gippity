@@ -116,8 +116,8 @@ Those starting with ! are those I'm currently working on.
 * [x] Adopting Lombok's @Getter and @Setter in Beans and Exceptions
 * [x] SonarCloud issues (was 2 Blk, 5 High, 22 Med, 30 Low, 1 Info)
 * [x] Jacoco repots saved in HTML in Dark Mode colors locally
-* [ ] ! Splitting unit test methods
-* [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 91.1%)
+* [x] Splitting unit test methods
+* [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 92.8%)
 * [ ] Completing markdown documentation under doc
 
 Note: It is possible I'll commit code in 0.0.1 dedicated branch soon after
