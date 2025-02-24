@@ -117,7 +117,7 @@ Those starting with ! are those I'm currently working on.
 * [x] SonarCloud issues (was 2 Blk, 5 High, 22 Med, 30 Low, 1 Info)
 * [x] Jacoco repots saved in HTML in Dark Mode colors locally
 * [x] Splitting unit test methods
-* [ ] ! Full unit tests coverage on SonarQube (was 84%) (local 92.8%)
+* [ ] ! Full unit tests coverage on SonarCloud (was 84%) (local 95.7%)
 * [ ] Completing markdown documentation under doc
 
 Note: It is possible I'll commit code in 0.0.1 dedicated branch soon after
