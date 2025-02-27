@@ -22,7 +22,7 @@ public abstract class BaseJobDispatcher extends HermodClass implements JobDispat
 		dispatcherInput.setSuccessful(false);
 
 		return dispatcherInput;
-	};
+	}
 
 	/**
 	 * Returns a JobDispatcherException with message formatted by project's standard.
@@ -76,6 +76,8 @@ public abstract class BaseJobDispatcher extends HermodClass implements JobDispat
 	 * @return the wanted exception with formatted message
 	 */
 	protected JobDispatcherException formatJobDispatcherException(ErrorType errorType, Throwable cause) {
+		if (errorType == null)
+			return formatJobDispatcherException(null, null, cause);
 		return formatJobDispatcherException(errorType.getMessage(), errorType.getCode(), cause);
 	}
 

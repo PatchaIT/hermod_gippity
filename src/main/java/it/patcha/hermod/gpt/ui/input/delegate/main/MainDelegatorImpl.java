@@ -22,8 +22,8 @@ public class MainDelegatorImpl extends BaseDelegator implements MainDelegator {
 
 	@Override
 	public ArgsBean castToArgsBean(HermodBean hermodBean) throws DelegatorException {
-		if (hermodBean instanceof ArgsBean)
-			return (ArgsBean) hermodBean;
+		if (hermodBean instanceof ArgsBean argsbean)
+			return argsbean;
 
 		else
 			throw formatDelegatorException(

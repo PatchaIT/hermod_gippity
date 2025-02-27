@@ -1,6 +1,8 @@
 package it.patcha.hermod.gpt.common.bean;
 
 import it.patcha.hermod.gpt.common.HermodClass;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -16,6 +18,8 @@ import java.io.Serializable;
  * <p/>
  * It also includes a boolean to track the before and the after.
  */
+@Getter
+@Setter
 public abstract class HermodBean extends HermodClass implements Serializable {
 
 	@Serial
@@ -24,16 +28,8 @@ public abstract class HermodBean extends HermodClass implements Serializable {
 	/** Should be set true if everything gone ok. */
 	private boolean successful;
 
-	public HermodBean() {
+	protected HermodBean() {
 		this.successful = false;
-	}
-
-	public boolean isSuccessful() {
-		return successful;
-	}
-
-	public void setSuccessful(boolean successful) {
-		this.successful = successful;
 	}
 
 	/**

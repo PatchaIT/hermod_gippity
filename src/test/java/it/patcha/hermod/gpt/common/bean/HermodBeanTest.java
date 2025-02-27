@@ -31,7 +31,7 @@ class HermodBeanTest extends HermodBaseTest {
 			hermodBean.setSuccessful(true);
 			boolean result = hermodBean.isSuccessful();
 
-			assertTrue(result, getEndTestLogKO());
+			assertTrueToLog(result, getEndTestLogKO());
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
 		} catch (Exception e) {

@@ -3,13 +3,14 @@ package it.patcha.hermod.gpt.common;
 import it.patcha.hermod.gpt.common.util.HermodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
 /**
- * Base abstract class for all application instantiable classes.
+ * Base abstract class for all application test classes.
  * The purpose is to initialize here all common attributes,
  *   or to declare here all common non-static methods.
  */
-public abstract class HermodClass {
+public abstract class HermodTestClass {
 	protected Logger logger;
 
 	/**
@@ -21,7 +22,7 @@ public abstract class HermodClass {
 	public static final String NL = System.lineSeparator();
 
 	/** Initialize the logger for instances of classes extending this abstract. */
-	protected HermodClass() {
+	protected HermodTestClass() {
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 
@@ -85,6 +86,27 @@ public abstract class HermodClass {
 	 */
 	public String getClassName() {
 		return getClassName(this);
+	}
+
+	/**
+	 * Concat {@code message.toString()} with {@code actual.toString()},
+	 *   returning {@code message} + {@code actual}.
+	 * </p>
+	 * If {@code message} is {@code empty},
+	 *   then {@code null} will be returned.
+	 *
+	 * @param concat what you want to concatenate to {@code message}
+	 * @param message the message after which {@code actual} have to be concatenated
+	 * @return {@code message} + {@code actual}, if {@code message} is not {@code empty},
+	 *   otherwise {@code null}
+	 * @param <T> the type of {@code actual},
+	 *   {@code actual.toString()} will be concatenated
+	 */
+	protected <T, U> String concatToMessage(T concat, U message) {
+		return !ObjectUtils.isEmpty(message) ?
+				message.toString() + (
+						!ObjectUtils.isEmpty(concat) ? concat : "") :
+				"";
 	}
 
 }

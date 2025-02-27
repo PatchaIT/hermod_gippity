@@ -11,7 +11,6 @@ import it.patcha.hermod.gpt.ui.input.read.args.ArgInfoReader;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.MessageProducer;
-import jakarta.jms.Queue;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +27,8 @@ public class MessageSenderTaskExecutorImpl extends BaseTaskExecutor implements M
 
 	@Override
 	public SendBean castToSendBean(HermodBean hermodBean) throws TaskExecutorException {
-		if (hermodBean instanceof SendBean)
-			return (SendBean) hermodBean;
+		if (hermodBean instanceof SendBean sendbean)
+			return sendbean;
 
 		else
 			throw formatTaskExecutorException(
@@ -61,12 +60,11 @@ public class MessageSenderTaskExecutorImpl extends BaseTaskExecutor implements M
 		String messageText = sendBean.getMessageText();
 
 		try (Connection connection = HermodUtils.createConnection(connectionFactory);
-			 Session session = HermodUtils.createSession(connection)) {
+			 Session session = HermodUtils.createSession(connection);
+			 MessageProducer producer = session.createProducer(session.createQueue(requestQueueName))) {
 
 			connection.start();
 
-			Queue queue = session.createQueue(requestQueueName);
-			MessageProducer producer = session.createProducer(queue);
 			TextMessage message = session.createTextMessage(messageText);
 			producer.send(message);
 

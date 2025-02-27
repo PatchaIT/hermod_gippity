@@ -3,6 +3,8 @@ package it.patcha.hermod.gpt.ui.input.read;
 import it.patcha.hermod.gpt.common.HermodBaseTest;
 import it.patcha.hermod.gpt.common.bean.HermodBean;
 import it.patcha.hermod.gpt.common.bean.ui.input.ArgsBean;
+import it.patcha.hermod.gpt.common.error.codes.ErrorType;
+import it.patcha.hermod.gpt.common.util.HermodUtils;
 import it.patcha.hermod.gpt.config.SpringConfig;
 import it.patcha.hermod.gpt.ui.input.read.common.error.InfoReaderException;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,6 +24,9 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NUL
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
@@ -28,7 +34,7 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK
 class BaseInfoReaderTest extends HermodBaseTest {
 
 	@InjectMocks
-	private BaseInfoReaderTest.BaseInfoReaderImpl jobDispatcher;
+	private BaseInfoReaderTest.BaseInfoReaderImpl infoReader;
 
 	private ArgsBean argsBean;
 
@@ -38,23 +44,201 @@ class BaseInfoReaderTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testHandleOptions(TestInfo testInfo) throws Exception {
+	void testHandleOptions_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			HermodBean result = jobDispatcher.handleOptions(argsBean);
-			assertNotNull(result, getEndTestLogKO());
+			HermodBean result = infoReader.handleOptions(argsBean);
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
 			swapInfoExpected(EXP_FALSE.toString());
-			assertFalse(result.isSuccessful(), getEndTestLog(TEST_AND_KO));
+			assertFalseToLog(result.isSuccessful(), getEndTestLog(TEST_AND_KO));
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testHandleOptions_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException exception =
+					assertThrowsToLog(InfoReaderException.class, () -> infoReader.handleOptions(null), getEndTestLogKO());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFormatInfoReaderException_Message_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException result = infoReader.formatInfoReaderException(errorMessage);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_CONTAINS + errorMessage);
+			assertTrueToLog(result.getMessage().contains(errorMessage), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFormatInfoReaderException_MessageCode_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException result = infoReader.formatInfoReaderException(errorMessage, errorCode);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_CONTAINS + errorMessage);
+			assertTrueToLog(result.getMessage().contains(errorMessage), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFormatInfoReaderException_MessageCause_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException result = infoReader.formatInfoReaderException(errorMessage, errorCause);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_CONTAINS + errorMessage);
+			assertTrueToLog(result.getMessage().contains(errorMessage), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFormatInfoReaderException_Type_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException result = infoReader.formatInfoReaderException(errorType);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_CONTAINS + errorType.getMessage());
+			assertTrueToLog(result.getMessage().contains(errorType.getMessage()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFormatInfoReaderException_TypeCause_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException result = infoReader.formatInfoReaderException(errorType, errorCause);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_CONTAINS + errorType.getMessage());
+			assertTrueToLog(result.getMessage().contains(errorType.getMessage()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFormatInfoReaderException_TypeCause_Null(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			InfoReaderException result = infoReader.formatInfoReaderException((ErrorType) null, errorCause);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
-			InfoReaderException exception =
-					assertThrows(InfoReaderException.class, () -> jobDispatcher.handleOptions(null), getEndTestLog(TEST_AND_KO));
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -63,88 +247,26 @@ class BaseInfoReaderTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testFormatInfoReaderException(TestInfo testInfo) throws Exception {
+	void testIncludeAndFormatIntoInfoReaderException_Throwable(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = jobDispatcher.formatInfoReaderException(ERROR_MESSAGE, ERROR_CODE);
-			assertNotNull(result, getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCode(), getEndTestLogKO());
+			InfoReaderException result = infoReader.includeAndFormatIntoInfoReaderException(errorThrowable);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NULL.toString());
-			assertNull(result.getCause(), getEndTestLogKO());
+			assertNullToLog(result.getCode(), getEndTestLog(TEST_AND_OK));
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLogKO());
+			swapInfoExpected(errorThrowable.toString());
+			assertEqualsToLog(errorThrowable, result.getCause(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(EXP_CONTAINS + ERROR_MESSAGE);
-			assertTrue(result.getMessage().contains(ERROR_MESSAGE), getEndTestLogKO());
+			swapInfoExpected(EXP_CONTAINS + errorThrowable.getMessage());
+			assertTrueToLog(result.getMessage().contains(errorThrowable.getMessage()), getEndTestLogKO());
 
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
-
-			result = jobDispatcher.formatInfoReaderException(ERROR_MESSAGE, ERROR_CAUSE);
-			assertNotNull(result, getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getMessage(), getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getCause(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(EXP_NULL.toString());
-			assertNull(result.getCode(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
-
-			swapInfoExpected(EXP_CONTAINS + ERROR_MESSAGE);
-			assertTrue(result.getMessage().contains(ERROR_MESSAGE), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, result.toString());
-
-			result = jobDispatcher.formatInfoReaderException(ERROR_MESSAGE);
-			assertNotNull(result, getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getMessage(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(EXP_NULL.toString());
-			assertNull(result.getCode(), getEndTestLog(TEST_AND_OK));
-			assertNull(result.getCause(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(EXP_CONTAINS + ERROR_MESSAGE);
-			assertTrue(result.getMessage().contains(ERROR_MESSAGE), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, result.toString());
-
-			result = jobDispatcher.formatInfoReaderException(ERROR_TYPE, ERROR_CAUSE);
-			assertNotNull(result, getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getMessage(), getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getCode(), getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getCause(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
-
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLogKO());
-
-			swapInfoExpected(EXP_CONTAINS + ERROR_TYPE.getMessage());
-			assertTrue(result.getMessage().contains(ERROR_TYPE.getMessage()), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, result.toString());
-
-			result = jobDispatcher.formatInfoReaderException(ERROR_TYPE);
-			assertNotNull(result, getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getMessage(), getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getCode(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(EXP_NULL.toString());
-			assertNull(result.getCause(), getEndTestLog(TEST_AND_OK));
-
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLogKO());
-
-			swapInfoExpected(EXP_CONTAINS + ERROR_TYPE.getMessage());
-			assertTrue(result.getMessage().contains(ERROR_TYPE.getMessage()), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, result.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -153,43 +275,62 @@ class BaseInfoReaderTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testIncludeAndFormatIntoInfoReaderException(TestInfo testInfo) throws Exception {
+	void testIncludeAndFormatIntoInfoReaderException_ThrowableCode(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = jobDispatcher.includeAndFormatIntoInfoReaderException(ERROR_THROWABLE, ERROR_CODE);
-			assertNotNull(result, getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
-			assertNotNull(result.getCode(), getEndTestLogKO());
+			InfoReaderException result = infoReader.includeAndFormatIntoInfoReaderException(errorThrowable, errorCode);
+			assertNotNullToLog(result, getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_THROWABLE.toString());
-			assertEquals(ERROR_THROWABLE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorThrowable.toString());
+			assertEqualsToLog(errorThrowable, result.getCause(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLogKO());
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(EXP_CONTAINS + ERROR_THROWABLE.getMessage());
-			assertTrue(result.getMessage().contains(ERROR_THROWABLE.getMessage()), getEndTestLogKO());
+			swapInfoExpected(EXP_CONTAINS + errorThrowable.getMessage());
+			assertTrueToLog(result.getMessage().contains(errorThrowable.getMessage()), getEndTestLogKO());
 
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
 
-			result = jobDispatcher.includeAndFormatIntoInfoReaderException(ERROR_THROWABLE);
-			assertNotNull(result, getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getMessage(), getEndTestLog(TEST_AND_OK));
-			assertNotNull(result.getCause(), getEndTestLog(TEST_AND_OK));
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
 
-			swapInfoExpected(EXP_NULL.toString());
-			assertNull(result.getCode(), getEndTestLog(TEST_AND_OK));
+	@Test
+	void testIncludeAndFormatIntoInfoReaderException_ThrowableCode_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
 
-			swapInfoExpected(ERROR_THROWABLE.toString());
-			assertEquals(ERROR_THROWABLE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
+				hermodUtils.when(
+								() -> HermodUtils.formatIntoHermodException(eq(errorThrowable), eq(InfoReaderException.class), any(), eq(errorCode)))
+						.thenThrow(errorCause);
 
-			swapInfoExpected(EXP_CONTAINS + ERROR_THROWABLE.getMessage());
-			assertTrue(result.getMessage().contains(ERROR_THROWABLE.getMessage()), getEndTestLog(TEST_AND_KO));
+				InfoReaderException result = infoReader.includeAndFormatIntoInfoReaderException(errorThrowable, errorCode);
+				assertNotNullToLog(result, getEndTestLogKO());
+				assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+				assertNotNullToLog(result.getCause(), getEndTestLogKO());
+				assertNotNullToLog(result.getCode(), getEndTestLogKO());
 
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, result.toString());
+				swapInfoExpected(errorCause.toString());
+				assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
+
+				swapInfoExpected(errorCode);
+				assertEqualsToLog(errorCode, result.getCode(), getEndTestLogKO());
+
+				swapInfoExpected(EXP_CONTAINS + errorThrowable.getMessage());
+				assertTrueToLog(result.getMessage().contains(errorThrowable.getMessage()), getEndTestLogKO());
+
+				logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+			}
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);

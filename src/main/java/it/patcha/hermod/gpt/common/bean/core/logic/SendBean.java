@@ -3,6 +3,8 @@ package it.patcha.hermod.gpt.common.bean.core.logic;
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
 import it.patcha.hermod.gpt.common.bean.HermodBean;
 import jakarta.jms.ConnectionFactory;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -11,17 +13,19 @@ import java.io.File;
 import java.io.Serial;
 
 /** This bean contains necessary data to send a message. */
+@Getter
+@Setter
 public class SendBean extends HermodBean {
 
 	@Serial
 	private static final long serialVersionUID = 1318371049411971948L;
-	private static final int iOddNums = 1;
+	private static final int ID_ODD_NUM = 1;
 
 	private String messageText;
 	private File messageFile;
 	private String requestQueueName;
 	private String replyQueueName;
-	private ConnectionFactory connectionFactory;
+	private transient ConnectionFactory connectionFactory;
 
 	public SendBean() {
 	}
@@ -49,48 +53,8 @@ public class SendBean extends HermodBean {
 		this.connectionFactory = connectionFactory;
 	}
 
-	public String getMessageText() {
-		return messageText;
-	}
-
-	public void setMessageText(String messageText) {
-		this.messageText = messageText;
-	}
-
-	public File getMessageFile() {
-		return messageFile;
-	}
-
-	public void setMessageFile(File messageFile) {
-		this.messageFile = messageFile;
-	}
-
 	public void setMessageFilePath(String messageFile) {
 		this.messageFile = new File(messageFile);
-	}
-
-	public String getRequestQueueName() {
-		return requestQueueName;
-	}
-
-	public void setRequestQueueName(String requestQueueName) {
-		this.requestQueueName = requestQueueName;
-	}
-
-	public String getReplyQueueName() {
-		return replyQueueName;
-	}
-
-	public void setReplyQueueName(String replyQueueName) {
-		this.replyQueueName = replyQueueName;
-	}
-
-	public ConnectionFactory getConnectionFactory() {
-		return connectionFactory;
-	}
-
-	public void setConnectionFactory(ConnectionFactory connectionFactory) {
-		this.connectionFactory = connectionFactory;
 	}
 
 	@Override
@@ -116,8 +80,8 @@ public class SendBean extends HermodBean {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(
-				HermodConstants.initialNonZeroOddNumbers[iOddNums],
-				HermodConstants.multiplierNonZeroOddNumbers[iOddNums]
+				HermodConstants.getInitialNonZeroOddNumbers()[ID_ODD_NUM],
+				HermodConstants.getMultiplierNonZeroOddNumbers()[ID_ODD_NUM]
 		)
 				.append(this.messageText)
 				.append(this.messageFile)

@@ -19,7 +19,7 @@ To respect all those best practices, we are adopting two project contants,
       `initialNonZeroOddNumbers`.
 
 By using such constants, each Bean class, which inherits directly or indirectly
-  from `HermodBean`, will adopt an index named `iOddNums`, to get his own
+  from `HermodBean`, will adopt an index named `ID_ODD_NUM`, to get his own
   odd primary integers to pass to his `HashCodeBuilder` constructor.
 
 With this document, we keep track of which index was used by which Bean class.

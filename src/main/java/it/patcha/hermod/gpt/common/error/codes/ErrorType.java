@@ -1,16 +1,24 @@
 package it.patcha.hermod.gpt.common.error.codes;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.INVALID_DATA_TYPE;
+
 /** This enumeration collects error codes and related error messages. */
+@Getter
 public enum ErrorType {
 
 	/** Main Usage Message: Output text which explains command line format */
 	UI01("UI", 1,
 			"Usage: java -jar hermod-gippity.jar -connF <Connection Factory URL> -requestQ <Request Queue Name> [-text <Text Here> | -file <File Path>]"),
+	/** Main Usage Message: Sorry, the Graphical User Interface has not been implemented yet */
+	UI02("UI", 2,
+			"GUI: Sorry, the Graphical User Interface has not been implemented yet."),
 
 	/** JobDispatcherException: Parameter null */
 	JD01("JD", 1, "dispatcherInput parameter cannot be null"),
@@ -25,6 +33,8 @@ public enum ErrorType {
 	IR03("IR", 3, "Unknown argument: %s"),
 	/** InfoReaderException: Failed to load value for argument */
 	IR04("IR", 4, "Failed to load value for argument: %s"),
+	/** InfoReaderException: Generic error */
+	IR99("IR", 99, "%s"),
 
 	/** WorkflowManagerException: Parameter null */
 	WM01("WM", 1, "workflowInput parameter cannot be null"),
@@ -41,6 +51,12 @@ public enum ErrorType {
 
 	/** Test Error: to not be used in runtime code */
 	TT01("TT", 1, "Error message for test");
+
+	ErrorType(String codePrefix, int codeNumber, String message) {
+		this.codeNumber = codeNumber;
+		this.codePrefix = codePrefix;
+		this.message = message;
+	}
 
 	private final String codePrefix;
 	private final int codeNumber;
@@ -76,29 +92,23 @@ public enum ErrorType {
 		List<ErrorType> type = byCodeNumber.get(codeNumber);
 
 		if (type == null)
-			throw new IllegalArgumentException("Invalid data type: " + codeNumber);
+			throw new IllegalArgumentException(INVALID_DATA_TYPE + codeNumber);
 
 		return type;
 	}
 
 	/** Get all ErrorType into a list, by corresponding prefix of the code
-	 * @param codeNumber : the prefix of the code for the wanted list of ErrorType
+	 * @param codePrefix : the prefix of the code for the wanted list of ErrorType
 	 * @throws IllegalArgumentException if no corresponding ErrorType is found
 	 * @return corresponding list of ErrorType if found, otherwise casts IllegalArgumentException
 	 */
-	public static List<ErrorType> fromCodePrefix(String codeNumber) {
-		List<ErrorType> type = byCodePrefix.get(codeNumber);
+	public static List<ErrorType> fromCodePrefix(String codePrefix) {
+		List<ErrorType> type = byCodePrefix.get(codePrefix);
 
 		if (type == null)
-			throw new IllegalArgumentException("Invalid data type: " + codeNumber);
+			throw new IllegalArgumentException(INVALID_DATA_TYPE + codePrefix);
 
 		return type;
-	}
-
-	ErrorType(String codePrefix, int codeNumber, String message) {
-		this.codeNumber = codeNumber;
-		this.codePrefix = codePrefix;
-		this.message = message;
 	}
 
 	/** Get the ErrorType by corresponding code
@@ -110,7 +120,7 @@ public enum ErrorType {
 		ErrorType type = byCode.get(code);
 
 		if (type == null)
-			throw new IllegalArgumentException("Invalid data type: " + code);
+			throw new IllegalArgumentException(INVALID_DATA_TYPE + code);
 
 		return type;
 	}
@@ -124,25 +134,13 @@ public enum ErrorType {
 		ErrorType type = byMessage.get(message);
 
 		if (type == null)
-			throw new IllegalArgumentException("Invalid data type: " + message);
+			throw new IllegalArgumentException(INVALID_DATA_TYPE + message);
 
 		return type;
 	}
 
-	public String getCodePrefix() {
-		return codePrefix;
-	}
-
-	public int getCodeNumber() {
-		return codeNumber;
-	}
-
 	public String getCode() {
 		return String.format("%s%02d", codePrefix, codeNumber);
-	}
-
-	public String getMessage() {
-		return message;
 	}
 
 }

@@ -18,18 +18,17 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_CONTAIN
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_EXCEPTION;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.INVALID_DATA_TYPE;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR03;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR04;
+import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR99;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.UI01;
+import static it.patcha.hermod.gpt.common.error.codes.ErrorType.UI02;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
 class ArgValidatorImplTest extends HermodBaseTest {
-
-	private static final String ILLEGAL_ARGUMENT = "illegal arguments";
 
 	@InjectMocks
 	private ArgValidatorImpl validator;
@@ -40,31 +39,25 @@ class ArgValidatorImplTest extends HermodBaseTest {
 	@BeforeEach
 	void setUp() {
 		args = new String[]{
-				ARG_CONNECTION_FACTORY_URL, CONNECTION_FACTORY_URL,
-				ARG_REQUEST_QUEUE_NAME, REQUEST_QUEUE_NAME,
-				ARG_JMS_MESSAGE_TEXT, JMS_MESSAGE_TEXT,
-				ARG_JMS_MESSAGE_FILE_PATH, JMS_MESSAGE_FILE_PATH
+				argConnectionFactoryUrl, valConnectionFactoryUrl,
+				argRequestQueueName, valRequestQueueName,
+				argJmsMessageText, valJmsMessageText,
+				argJmsMessageFilePath, valJmsMessageFilePath
 		};
 
 		argsBean = new ArgsBean(args);
 	}
 
 	@Test
-	void testCastToArgsBean(TestInfo testInfo) throws Exception {
+	void testCastToArgsBean_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			ArgsBean result = validator.castToArgsBean(argsBean);
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
-
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
-			ValidatorException exception =
-					assertThrows(ValidatorException.class, () -> validator.castToArgsBean(new SendBean()), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -73,51 +66,206 @@ class ArgValidatorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testValidateArgs(TestInfo testInfo) throws Exception {
+	void testCastToArgsBean_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.castToArgsBean(new SendBean()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			ArgsBean result = validator.validateArgs(argsBean);
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(CONNECTION_FACTORY_URL);
-			assertEquals(CONNECTION_FACTORY_URL, result.getConnectionFactoryUrl(), getEndTestLogKO());
-			swapInfoExpected(REQUEST_QUEUE_NAME);
-			assertEquals(REQUEST_QUEUE_NAME, result.getRequestQueueName(), getEndTestLogKO());
-			swapInfoExpected(JMS_MESSAGE_TEXT);
-			assertEquals(JMS_MESSAGE_TEXT, result.getMessageText(), getEndTestLogKO());
-			swapInfoExpected(JMS_MESSAGE_FILE.getPath());
-			assertEquals(JMS_MESSAGE_FILE, result.getMessageFile(), getEndTestLogKO());
+			swapInfoExpected(valConnectionFactoryUrl);
+			assertEqualsToLog(valConnectionFactoryUrl, result.getConnectionFactoryUrl(), getEndTestLogKO());
+			swapInfoExpected(valRequestQueueName);
+			assertEqualsToLog(valRequestQueueName, result.getRequestQueueName(), getEndTestLogKO());
+			swapInfoExpected(valJmsMessageText);
+			assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLogKO());
+			swapInfoExpected(objJmsMessageFile.getPath());
+			assertEqualsToLog(objJmsMessageFile, result.getMessageFile(), getEndTestLogKO());
 			swapInfoExpected(EXP_TRUE.toString());
-			assertTrue(result.isSuccessful(), getEndTestLogKO());
+			assertTrueToLog(result.isSuccessful(), getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
-			argsBean = new ArgsBean(args = new String[]{});
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionUI01_ConnectionFactoryUrl(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{
+					argRequestQueueName, valRequestQueueName,
+					argJmsMessageText, valJmsMessageText,
+					argJmsMessageFilePath, valJmsMessageFilePath
+			});
 			ValidatorException exception =
-					assertThrows(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLog(TEST_AND_KO));
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
+
 			swapInfoExpected(UI01.getCode());
-			assertEquals(UI01.getCode(), exception.getCode(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(UI01.getCode(), exception.getCode(), getEndTestLogKO());
 			swapInfoExpected(EXP_CONTAINS + UI01.getMessage());
-			assertTrue(exception.getMessage().contains(UI01.getMessage()), getEndTestLog(TEST_AND_KO));
+			assertTrueToLog(exception.getMessage().contains(UI01.getMessage()), getEndTestLogKO());
 
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
-			argsBean = new ArgsBean(args = new String[]{ILLEGAL_ARGUMENT});
-			exception =
-					assertThrows(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLog(TEST_AND_KO));
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionUI01_RequestQueueName(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{
+					argConnectionFactoryUrl, valConnectionFactoryUrl,
+					argJmsMessageText, valJmsMessageText,
+					argJmsMessageFilePath, valJmsMessageFilePath
+			});
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
+
+			swapInfoExpected(UI01.getCode());
+			assertEqualsToLog(UI01.getCode(), exception.getCode(), getEndTestLogKO());
+			swapInfoExpected(EXP_CONTAINS + UI01.getMessage());
+			assertTrueToLog(exception.getMessage().contains(UI01.getMessage()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionUI01_MessageText(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{
+					argConnectionFactoryUrl, valConnectionFactoryUrl,
+					argRequestQueueName, valRequestQueueName
+			});
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
+
+			swapInfoExpected(UI01.getCode());
+			assertEqualsToLog(UI01.getCode(), exception.getCode(), getEndTestLogKO());
+			swapInfoExpected(EXP_CONTAINS + UI01.getMessage());
+			assertTrueToLog(exception.getMessage().contains(UI01.getMessage()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionUI02(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{argGui});
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
+
+			swapInfoExpected(UI02.getCode());
+			assertEqualsToLog(UI02.getCode(), exception.getCode(), getEndTestLogKO());
+			swapInfoExpected(EXP_CONTAINS + UI02.getMessage());
+			assertTrueToLog(exception.getMessage().contains(UI02.getMessage()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionIR03(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{argReplyQueueName});
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
 			swapInfoExpected(IR03.getCode());
-			assertEquals(IR03.getCode(), exception.getCode(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(IR03.getCode(), exception.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
-			argsBean = new ArgsBean(args = new String[]{ARG_JMS_MESSAGE_TEXT});
-			exception =
-					assertThrows(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLog(TEST_AND_KO));
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionIR04(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{argJmsMessageText});
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
 			swapInfoExpected(IR04.getCode());
-			assertEquals(IR04.getCode(), exception.getCode(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(IR04.getCode(), exception.getCode(), getEndTestLogKO());
 
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_ExceptionIR99(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + ValidatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			argsBean = new ArgsBean(args = new String[]{INVALID_DATA_TYPE});
+			ValidatorException exception =
+					assertThrowsToLog(ValidatorException.class, () -> validator.validateArgs(argsBean), getEndTestLogKO());
+			swapInfoExpected(IR99.getCode());
+			assertEqualsToLog(IR99.getCode(), exception.getCode(), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);

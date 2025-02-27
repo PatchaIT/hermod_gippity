@@ -1,6 +1,8 @@
 package it.patcha.hermod.gpt.common.bean;
 
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -29,11 +31,13 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.LOG_TEST_END;
  *
  * @see TestInfo
  */
+@Getter
+@Setter
 public class HermodTestInfo extends HermodBean implements TestInfo {
 
 	@Serial
 	private static final long serialVersionUID = -5821959305164624866L;
-	private static final int iOddNums = 0;
+	private static final int ID_ODD_NUM = 0;
 
 	private TestInfo testInfo;
 	private String outcome;
@@ -57,22 +61,6 @@ public class HermodTestInfo extends HermodBean implements TestInfo {
 	public HermodTestInfo(TestInfo testInfo, String expected) {
 		this.testInfo = testInfo;
 		this.outcome = getInfoOutcome(expected);
-	}
-
-	public TestInfo getTestInfo() {
-		return testInfo;
-	}
-
-	public void setTestInfo(TestInfo testInfo) {
-		this.testInfo = testInfo;
-	}
-
-	public String getOutcome() {
-		return outcome;
-	}
-
-	public void setOutcome(String outcome) {
-		this.outcome = outcome;
 	}
 
 	@Override
@@ -146,8 +134,8 @@ public class HermodTestInfo extends HermodBean implements TestInfo {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(
-				HermodConstants.initialNonZeroOddNumbers[iOddNums],
-				HermodConstants.multiplierNonZeroOddNumbers[iOddNums]
+				HermodConstants.getInitialNonZeroOddNumbers()[ID_ODD_NUM],
+				HermodConstants.getMultiplierNonZeroOddNumbers()[ID_ODD_NUM]
 		)
 				.append(this.testInfo)
 				.append(this.outcome)

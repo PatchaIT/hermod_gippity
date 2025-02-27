@@ -26,9 +26,9 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			InfoReaderException result = new InfoReaderException();
-			assertNull(result.getCode(), getEndTestLogKO());
-			assertNull(result.getMessage(), getEndTestLogKO());
-			assertNull(result.getCause(), getEndTestLogKO());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -45,19 +45,19 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_CAUSE);
-			assertNotNull(result.getCode(), getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -74,15 +74,15 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_MESSAGE);
-			assertNull(result.getCode(), getEndTestLogKO());
-			assertNull(result.getCause(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorMessage);
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -99,18 +99,18 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_MESSAGE, ERROR_CAUSE);
-			assertNull(result.getCode(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorMessage, errorCause);
+			assertNullToLog(result.getCode(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -127,18 +127,18 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_MESSAGE, ERROR_CODE);
-			assertNull(result.getCause(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorMessage, errorCode);
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -155,19 +155,19 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_MESSAGE, ERROR_CODE, ERROR_CAUSE);
-			assertNotNull(result.getCode(), getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorMessage, errorCode, errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -184,18 +184,18 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_TYPE);
-			assertNull(result.getCause(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorType);
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -212,19 +212,19 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_TYPE, ERROR_CAUSE);
-			assertNotNull(result.getCode(), getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorType, errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -241,15 +241,15 @@ class InfoReaderExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			InfoReaderException result = new InfoReaderException(ERROR_THROWABLE);
-			assertNull(result.getCode(), getEndTestLogKO());
-			assertNull(result.getMessage(), getEndTestLogKO());
+			InfoReaderException result = new InfoReaderException(errorThrowable);
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getMessage(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_THROWABLE.toString());
-			assertEquals(ERROR_THROWABLE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorThrowable.toString());
+			assertEqualsToLog(errorThrowable, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + InfoReaderException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());

@@ -61,6 +61,8 @@ public abstract class BaseDelegator extends HermodClass implements Delegator {
 	 * @return the wanted exception with formatted message
 	 */
 	protected DelegatorException formatDelegatorException(ErrorType errorType, Throwable cause) {
+		if (errorType == null)
+			return formatDelegatorException(null, null, cause);
 		return formatDelegatorException(errorType.getMessage(), errorType.getCode(), cause);
 	}
 

@@ -1,6 +1,10 @@
 package it.patcha.hermod.gpt.common.error;
 
 import it.patcha.hermod.gpt.common.error.codes.ErrorType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Synchronized;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 
@@ -15,6 +19,8 @@ import java.io.Serial;
  *     to allow to instantiate with generic constructor and add details later.</li>
  * </ul>
  */
+@Getter
+@Setter
 public class HermodException extends Exception {
 
 	@Serial
@@ -22,6 +28,8 @@ public class HermodException extends Exception {
 
 	private String message;
 	private String code;
+	@Getter(onMethod = @__(@Synchronized))
+	@Setter(onMethod = @__(@Synchronized))
 	private Throwable cause;
 
 	public HermodException() {
@@ -73,37 +81,9 @@ public class HermodException extends Exception {
 		this.cause = cause;
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	@Override
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	@Override
-	public Throwable getCause() {
-		return cause;
-	}
-
-	public void setCause(Throwable cause) {
-		this.cause = cause;
-	}
-
 	@Override
 	public String toString() {
-		String s = getClass().getName();
-		String message = code != null ? code + ": " + this.message : this.message;
-		return message != null ? s + ": " + message : s;
+		return getClass().getName() + ": " + (StringUtils.isEmpty(this.code) ? this.code + ": " + this.message : this.message);
 	}
 
 	public String throwableToString() {

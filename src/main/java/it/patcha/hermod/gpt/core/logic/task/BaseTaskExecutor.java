@@ -61,6 +61,8 @@ public abstract class BaseTaskExecutor extends HermodClass implements TaskExecut
 	 * @return the wanted exception with formatted message
 	 */
 	protected TaskExecutorException formatTaskExecutorException(ErrorType errorType, Throwable cause) {
+		if (errorType == null)
+			return formatTaskExecutorException(null, null, cause);
 		return formatTaskExecutorException(errorType.getMessage(), errorType.getCode(), cause);
 	}
 

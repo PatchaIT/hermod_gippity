@@ -8,6 +8,7 @@ import it.patcha.hermod.gpt.common.HermodBaseTest;
 import it.patcha.hermod.gpt.common.bean.core.logic.SendBean;
 import it.patcha.hermod.gpt.common.bean.ui.input.ArgsBean;
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
+import it.patcha.hermod.gpt.common.error.UnformattedHermodException;
 import it.patcha.hermod.gpt.common.util.HermodUtils;
 import it.patcha.hermod.gpt.config.SpringConfig;
 import it.patcha.hermod.gpt.core.logic.task.common.error.TaskExecutorException;
@@ -17,6 +18,7 @@ import jakarta.jms.MessageProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -29,12 +31,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.File;
+
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_EXCEPTION;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
+import static it.patcha.hermod.gpt.common.error.codes.ErrorType.TT01;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mockStatic;
@@ -76,21 +82,15 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testCastToSendBean(TestInfo testInfo) throws Exception {
+	void testCastToSendBean_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			SendBean result = taskExecutor.castToSendBean(sendBean);
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
-
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + TaskExecutorException.class.getName());
-			TaskExecutorException exception =
-					assertThrows(TaskExecutorException.class, () -> taskExecutor.castToSendBean(new ArgsBean()), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -99,27 +99,38 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testReadFile(TestInfo testInfo) throws Exception {
+	void testCastToSendBean_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + TaskExecutorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			TaskExecutorException exception =
+					assertThrowsToLog(TaskExecutorException.class, () -> taskExecutor.castToSendBean(new ArgsBean()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testReadFile_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			SendBean result = taskExecutor.readFile(sendBean);
-			assertNotNull(result, getEndTestLogKO());
-			swapInfoExpected(EXP_NULL.toString());
-			assertNull(sendBean.getMessageFile(), getEndTestLogKO());
-			assertNull(sendBean.getMessageText(), getEndTestLogKO());
-
-			sendBean.setMessageFile(JMS_MESSAGE_FILE);
+			sendBean.setMessageFile(objJmsMessageFile);
 			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
-				hermodUtils.when(() -> HermodUtils.readFile(JMS_MESSAGE_FILE)).thenReturn(JMS_MESSAGE_TEXT);
+				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenReturn(valJmsMessageText);
 
-				swapInfoExpected(EXP_NOT_NULL.toString());
-				result = taskExecutor.readFile(sendBean);
-				assertNotNull(result, getEndTestLogKO());
+				SendBean result = taskExecutor.readFile(sendBean);
+				assertNotNullToLog(result, getEndTestLogKO());
 
-				swapInfoExpected(JMS_MESSAGE_TEXT);
-				assertEquals(JMS_MESSAGE_TEXT, result.getMessageText(), getEndTestLogKO());
+				swapInfoExpected(valJmsMessageText);
+				assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLogKO());
+
 				logger.debug("{}{}", getEndTestLogOK(), result.getMessageText());
 			}
 
@@ -130,7 +141,107 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testSendMessage(TestInfo testInfo) throws Exception {
+	void testReadFile_Empty(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			sendBean.setMessageFile(new File(""));
+			SendBean result = taskExecutor.readFile(sendBean);
+			assertNotNullToLog(result, getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
+			assertNotNullToLog(sendBean.getMessageFile(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_TRUE.toString());
+			assertTrueToLog(StringUtils.isEmpty(sendBean.getMessageFile().getPath()), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(sendBean.getMessageText(), getEndTestLogKO());
+
+			logger.debug("{}{}", getEndTestLogOK(), result.getMessageText());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testReadFile_Null(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			SendBean result = taskExecutor.readFile(sendBean);
+			assertNotNullToLog(result, getEndTestLogKO());
+
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(sendBean.getMessageFile(), getEndTestLogKO());
+			assertNullToLog(sendBean.getMessageText(), getEndTestLogKO());
+
+			logger.debug("{}{}", getEndTestLogOK(), result.getMessageText());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testReadFile_Exception_Message(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + TaskExecutorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			sendBean.setMessageFile(objJmsMessageFile);
+			sendBean.setMessageText(valJmsMessageText);
+			UnformattedHermodException unformattedHermodException = new UnformattedHermodException(TT01);
+			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
+				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenThrow(unformattedHermodException);
+
+				SendBean result = taskExecutor.readFile(sendBean);
+				assertNotNullToLog(result, getEndTestLogKO());
+
+				swapInfoExpected(valJmsMessageText);
+				assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLogKO());
+
+				logger.debug("{}{}", getEndTestLogOK(), result.getMessageText());
+			}
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testReadFile_Exception_NoMessage(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + TaskExecutorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			sendBean.setMessageFile(objJmsMessageFile);
+			UnformattedHermodException unformattedHermodException = new UnformattedHermodException(TT01);
+			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
+				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenThrow(unformattedHermodException);
+				hermodUtils.when(() -> HermodUtils.formatIntoHermodException(eq(unformattedHermodException), eq(TaskExecutorException.class), any(), isNull()))
+						.thenReturn(new TaskExecutorException(TT01, unformattedHermodException));
+
+				TaskExecutorException exception =
+						assertThrowsToLog(TaskExecutorException.class, () -> taskExecutor.readFile(sendBean), getEndTestLogKO());
+
+				logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+			}
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testSendMessage_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_TRUE.toString());
 			logger.debug(getStartTestLog());
@@ -139,8 +250,8 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 			rootLogger.addAppender(logAppender);
 
 			sendBean.setConnectionFactory(connectionFactory);
-			sendBean.setRequestQueueName(REQUEST_QUEUE_NAME);
-			sendBean.setMessageText(JMS_MESSAGE_TEXT);
+			sendBean.setRequestQueueName(valRequestQueueName);
+			sendBean.setMessageText(valJmsMessageText);
 			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
 				hermodUtils.when(() -> HermodUtils.createConnection(connectionFactory)).thenReturn(connection);
 				hermodUtils.when(() -> HermodUtils.createSession(connection)).thenReturn(session);
@@ -153,22 +264,33 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 				SendBean result = taskExecutor.sendMessage(sendBean);
 				boolean check = checkIntoLogs(
 						HermodConstants.MESSAGE_SENT_LOG.replace("{}", sendBean.getRequestQueueName()), Level.INFO, logAppender);
-				assertTrue(check, getEndTestLogKO());
+				assertTrueToLog(check, getEndTestLogKO());
 
 				swapInfoExpected(EXP_NOT_NULL.toString());
-				assertNotNull(result, getEndTestLogKO());
+				assertNotNullToLog(result, getEndTestLogKO());
 
 				swapInfoExpected(EXP_TRUE.toString());
-				assertTrue(sendBean.isSuccessful(), getEndTestLogKO());
+				assertTrueToLog(sendBean.isSuccessful(), getEndTestLogKO());
 
 				logger.debug("{}{}", getEndTestLogOK(), check);
 			}
 
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + TaskExecutorException.class.getName());
-			TaskExecutorException exception =
-					assertThrows(TaskExecutorException.class, () -> taskExecutor.sendMessage(new SendBean()), getEndTestLog(TEST_AND_KO));
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
 
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
+	@Test
+	void testSendMessage_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + TaskExecutorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			TaskExecutorException exception =
+					assertThrowsToLog(TaskExecutorException.class, () -> taskExecutor.sendMessage(new SendBean()), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);

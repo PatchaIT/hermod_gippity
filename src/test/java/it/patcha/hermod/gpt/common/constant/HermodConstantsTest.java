@@ -31,10 +31,10 @@ class HermodConstantsTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			String result = TextColor.BLUE.toString();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected(BLUE_TXT + SAMPLE_TEXT);
-			assertEquals(BLUE_TXT, result, getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(BLUE_TXT, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result + SAMPLE_TEXT);
 
@@ -51,10 +51,10 @@ class HermodConstantsTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			String result = BackgroundColor.BLUE.toString();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected(BLUE_BKG + SAMPLE_TEXT);
-			assertEquals(BLUE_BKG, result, getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(BLUE_BKG, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result + SAMPLE_TEXT);
 

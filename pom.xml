@@ -62,6 +62,12 @@
 			<artifactId>spring-context</artifactId>
 			<version>6.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.34</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- test scope -->
 		<dependency>
@@ -139,6 +145,56 @@
 					</dependenciesToScan>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<formats>
+								<format>HTML</format>
+								<format>XML</format>
+							</formats>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<mkdir dir="${project.build.directory}/site/jacoco/jacoco-resources" />
+								<copy file="${project.basedir}/src/main/resources/jacoco-dark/report.css"
+									  tofile="${project.build.directory}/site/jacoco/jacoco-resources/report.css"
+									  overwrite="true"/>
+								<copy file="${project.basedir}/src/main/resources/jacoco-dark/prettify.css"
+									  tofile="${project.build.directory}/site/jacoco/jacoco-resources/prettify.css"
+									  overwrite="true"/>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -150,6 +206,10 @@
 			</activation>
 			<properties>
 				<sonar.token>${env.SONAR_TOKEN}</sonar.token>
+				<!-- Ignore rule S1165 for all classes ending with "Exception.java": Exceptions attributes are not final -->
+				<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+				<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1165</sonar.issue.ignore.multicriteria.e1.ruleKey>
+				<sonar.issue.ignore.multicriteria.e1.resourceKey>**/*Exception.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 			</properties>
 			<build>
 				<plugins>
@@ -161,26 +221,6 @@
 							<execution>
 								<goals>
 									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco.version}</version>
-						<executions>
-							<execution>
-								<id>default-prepare-agent</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-report</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>report</goal>
 								</goals>
 							</execution>
 						</executions>

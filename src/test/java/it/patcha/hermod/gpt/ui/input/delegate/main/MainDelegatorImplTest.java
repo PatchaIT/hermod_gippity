@@ -24,8 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_EXCEPTION;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -58,21 +56,15 @@ class MainDelegatorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testCastToArgsBean(TestInfo testInfo) throws Exception {
+	void testCastToArgsBean_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			ArgsBean result = delegator.castToArgsBean(argsBean);
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
-
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + DelegatorException.class.getName());
-			DelegatorException exception =
-					assertThrows(DelegatorException.class, () -> delegator.castToArgsBean(sendBean), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -81,7 +73,24 @@ class MainDelegatorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testDelegateArgs(TestInfo testInfo) throws Exception {
+	void testCastToArgsBean_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + DelegatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			DelegatorException exception =
+					assertThrowsToLog(DelegatorException.class, () -> delegator.castToArgsBean(sendBean), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testDelegateArgs_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
@@ -89,16 +98,9 @@ class MainDelegatorImplTest extends HermodBaseTest {
 			doReturn(argsBean).when(argInfoReader).handleOptions(argsBean);
 
 			ArgsBean result = delegator.delegateArgs(argInfoReader, argsBean);
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
-
-			swapInfoExpected(EXP_EXCEPTION + LOG_NL + DelegatorException.class.getName());
-			doThrow(new InfoReaderException(ERROR_CAUSE)).when(argInfoReader).handleOptions(argsBean);
-			DelegatorException exception =
-					assertThrows(DelegatorException.class, () -> delegator.delegateArgs(argInfoReader, argsBean), getEndTestLog(TEST_AND_KO));
-
-			logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -107,28 +109,63 @@ class MainDelegatorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testDelegateMessage(TestInfo testInfo) throws Exception {
+	void testDelegateArgs_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + DelegatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			doThrow(new InfoReaderException(errorCause)).when(argInfoReader).handleOptions(argsBean);
+			DelegatorException exception =
+					assertThrowsToLog(DelegatorException.class, () -> delegator.delegateArgs(argInfoReader, argsBean), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testDelegateMessage_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			doReturn(sendBean).when(messageSender).handleWorkflow(any(SendBean.class));
 
-			argsBean.setConnectionFactoryUrl(CONNECTION_FACTORY_URL);
+			argsBean.setConnectionFactoryUrl(valConnectionFactoryUrl);
 			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
 				hermodUtils.when(() -> HermodUtils.getConnectionFactory(argsBean.getConnectionFactoryUrl())).thenReturn(connectionFactory);
 
 				SendBean result = delegator.delegateMessage(messageSender, argsBean);
-				assertNotNull(result, getEndTestLogKO());
+				assertNotNullToLog(result, getEndTestLogKO());
 
 				logger.debug("{}{}", getEndTestLogOK(), result);
+			}
 
-				swapInfoExpected(EXP_EXCEPTION + LOG_NL + DelegatorException.class.getName());
-				doThrow(new WorkflowManagerException(ERROR_CAUSE)).when(messageSender).handleWorkflow(any(SendBean.class));
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testDelegateMessage_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + DelegatorException.class.getName());
+			logger.debug(getStartTestLog());
+
+			doThrow(new WorkflowManagerException(errorCause)).when(messageSender).handleWorkflow(any(SendBean.class));
+
+			argsBean.setConnectionFactoryUrl(valConnectionFactoryUrl);
+			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
+				hermodUtils.when(() -> HermodUtils.getConnectionFactory(argsBean.getConnectionFactoryUrl())).thenReturn(connectionFactory);
+
 				DelegatorException exception =
-						assertThrows(DelegatorException.class, () -> delegator.delegateMessage(messageSender, argsBean), getEndTestLog(TEST_AND_KO));
+						assertThrowsToLog(DelegatorException.class, () -> delegator.delegateMessage(messageSender, argsBean), getEndTestLogKO());
 
-				logger.debug("{}{}{}", getEndTestLog(TEST_AND_OK), LOG_NL, exception.toString());
+				logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
 			}
 
 		} catch (Exception e) {

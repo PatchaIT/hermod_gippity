@@ -27,10 +27,10 @@ class HermodClassTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			String result = hermodClass.getSimpleName();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected(HermodClassImpl.class.getSimpleName());
-			assertEquals(HermodClassImpl.class.getSimpleName(), result, getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(HermodClassImpl.class.getSimpleName(), result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -47,10 +47,10 @@ class HermodClassTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			String result = hermodClass.getClassName();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected(HermodClassImpl.class.getName());
-			assertEquals(HermodClassImpl.class.getName(), result, getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(HermodClassImpl.class.getName(), result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 

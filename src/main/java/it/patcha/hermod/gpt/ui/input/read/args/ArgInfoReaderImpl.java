@@ -6,15 +6,15 @@ import it.patcha.hermod.gpt.ui.input.read.BaseInfoReader;
 import it.patcha.hermod.gpt.ui.input.read.common.error.InfoReaderException;
 import it.patcha.hermod.gpt.ui.input.verify.args.ArgValidator;
 import it.patcha.hermod.gpt.ui.input.verify.common.error.ValidatorException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /** Implementation of ArgInfoReader in charge of reading and validating command line arguments. */
 @Component
+@RequiredArgsConstructor
 public class ArgInfoReaderImpl extends BaseInfoReader implements ArgInfoReader {
 
-	@Autowired
-	private ArgValidator argValidator;
+	private final ArgValidator argValidator;
 
 	@Override
 	public ArgsBean handleOptions(HermodBean readerInput) throws InfoReaderException {

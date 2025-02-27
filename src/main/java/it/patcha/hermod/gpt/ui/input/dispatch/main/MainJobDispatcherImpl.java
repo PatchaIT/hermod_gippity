@@ -9,19 +9,17 @@ import it.patcha.hermod.gpt.ui.input.delegate.main.MainDelegator;
 import it.patcha.hermod.gpt.ui.input.dispatch.BaseJobDispatcher;
 import it.patcha.hermod.gpt.ui.input.dispatch.common.error.JobDispatcherException;
 import it.patcha.hermod.gpt.ui.input.read.args.ArgInfoReader;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /** Implementation of MainJobDispatcher in charge of delegate from the main thread. */
 @Component
+@RequiredArgsConstructor
 public class MainJobDispatcherImpl extends BaseJobDispatcher implements MainJobDispatcher {
 
-	@Autowired
-	private MainDelegator mainDelegator;
-	@Autowired
-	private ArgInfoReader argInfoReader;
-	@Autowired
-	private MessageSenderWorkflowManager messageSender;
+	private final MainDelegator mainDelegator;
+	private final ArgInfoReader argInfoReader;
+	private final MessageSenderWorkflowManager messageSender;
 
 	@Override
 	public HermodBean handleJobs(HermodBean dispatcherInput) throws JobDispatcherException {
@@ -37,7 +35,7 @@ public class MainJobDispatcherImpl extends BaseJobDispatcher implements MainJobD
 			throw new JobDispatcherException(e);
 		}
 
-		return sendBean; // TODO: It's still not said this will be the final returned bean
+		return sendBean;
 	}
 
 }

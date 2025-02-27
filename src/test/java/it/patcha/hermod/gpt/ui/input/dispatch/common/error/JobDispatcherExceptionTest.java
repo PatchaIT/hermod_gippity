@@ -26,9 +26,9 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			JobDispatcherException result = new JobDispatcherException();
-			assertNull(result.getCode(), getEndTestLogKO());
-			assertNull(result.getMessage(), getEndTestLogKO());
-			assertNull(result.getCause(), getEndTestLogKO());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -45,19 +45,19 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_CAUSE);
-			assertNotNull(result.getCode(), getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -74,15 +74,15 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_MESSAGE);
-			assertNull(result.getCode(), getEndTestLogKO());
-			assertNull(result.getCause(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorMessage);
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -99,18 +99,18 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_MESSAGE, ERROR_CAUSE);
-			assertNull(result.getCode(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorMessage, errorCause);
+			assertNullToLog(result.getCode(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -127,18 +127,18 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_MESSAGE, ERROR_CODE);
-			assertNull(result.getCause(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorMessage, errorCode);
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -155,19 +155,19 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_MESSAGE, ERROR_CODE, ERROR_CAUSE);
-			assertNotNull(result.getCode(), getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorMessage, errorCode, errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -184,18 +184,18 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_TYPE);
-			assertNull(result.getCause(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorType);
+			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -212,19 +212,19 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_TYPE, ERROR_CAUSE);
-			assertNotNull(result.getCode(), getEndTestLogKO());
-			assertNotNull(result.getMessage(), getEndTestLogKO());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorType, errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result.getCode(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result.getMessage(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(ERROR_CAUSE.toString());
-			assertEquals(ERROR_CAUSE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
@@ -241,15 +241,15 @@ class JobDispatcherExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			JobDispatcherException result = new JobDispatcherException(ERROR_THROWABLE);
-			assertNull(result.getCode(), getEndTestLogKO());
-			assertNull(result.getMessage(), getEndTestLogKO());
+			JobDispatcherException result = new JobDispatcherException(errorThrowable);
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getMessage(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
-			assertNotNull(result.getCause(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
-			swapInfoExpected(ERROR_THROWABLE.toString());
-			assertEquals(ERROR_THROWABLE, result.getCause(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(errorThrowable.toString());
+			assertEqualsToLog(errorThrowable, result.getCause(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + JobDispatcherException.class.getName());
 			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());

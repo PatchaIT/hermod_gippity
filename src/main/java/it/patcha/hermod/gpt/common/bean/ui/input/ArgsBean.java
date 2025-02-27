@@ -2,6 +2,8 @@ package it.patcha.hermod.gpt.common.bean.ui.input;
 
 import it.patcha.hermod.gpt.common.bean.HermodBean;
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,11 +15,13 @@ import java.io.Serial;
  * This bean contains command line arguments
  *   and all data expected to be got from arguments.
  */
+@Getter
+@Setter
 public class ArgsBean extends HermodBean {
 
 	@Serial
 	private static final long serialVersionUID = 8414209493919750067L;
-	private static final int iOddNums = 2;
+	private static final int ID_ODD_NUM = 2;
 
 	private String[] args;
 
@@ -34,56 +38,8 @@ public class ArgsBean extends HermodBean {
 		this.args = args;
 	}
 
-	public String[] getArgs() {
-		return args;
-	}
-
-	public void setArgs(String[] args) {
-		this.args = args;
-	}
-
-	public String getMessageText() {
-		return messageText;
-	}
-
-	public void setMessageText(String messageText) {
-		this.messageText = messageText;
-	}
-
-	public File getMessageFile() {
-		return messageFile;
-	}
-
-	public void setMessageFile(File messageFile) {
-		this.messageFile = messageFile;
-	}
-
 	public void setMessageFilePath(String messageFilePath) {
 		this.messageFile = new File(messageFilePath);
-	}
-
-	public String getRequestQueueName() {
-		return requestQueueName;
-	}
-
-	public void setRequestQueueName(String requestQueueName) {
-		this.requestQueueName = requestQueueName;
-	}
-
-	public String getReplyQueueName() {
-		return replyQueueName;
-	}
-
-	public void setReplyQueueName(String replyQueueName) {
-		this.replyQueueName = replyQueueName;
-	}
-
-	public String getConnectionFactoryUrl() {
-		return connectionFactoryUrl;
-	}
-
-	public void setConnectionFactoryUrl(String connectionFactoryUrl) {
-		this.connectionFactoryUrl = connectionFactoryUrl;
 	}
 
 	@Override
@@ -110,8 +66,8 @@ public class ArgsBean extends HermodBean {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(
-				HermodConstants.initialNonZeroOddNumbers[iOddNums],
-				HermodConstants.multiplierNonZeroOddNumbers[iOddNums]
+				HermodConstants.getInitialNonZeroOddNumbers()[ID_ODD_NUM],
+				HermodConstants.getMultiplierNonZeroOddNumbers()[ID_ODD_NUM]
 		)
 				.append(this.args)
 				.append(this.messageText)

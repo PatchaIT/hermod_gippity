@@ -6,15 +6,15 @@ import it.patcha.hermod.gpt.core.logic.flow.BaseWorkflowManager;
 import it.patcha.hermod.gpt.core.logic.flow.common.error.WorkflowManagerException;
 import it.patcha.hermod.gpt.core.logic.task.common.error.TaskExecutorException;
 import it.patcha.hermod.gpt.core.logic.task.sender.MessageSenderTaskExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /** Implementation of MessageSenderWorkflowManager in charge of sending message. */
 @Component
+@RequiredArgsConstructor
 public class MessageSenderWorkflowManagerImpl extends BaseWorkflowManager implements MessageSenderWorkflowManager {
 
-	@Autowired
-	private MessageSenderTaskExecutor messageSenderTaskExecutor;
+	private final MessageSenderTaskExecutor messageSenderTaskExecutor;
 
 	@Override
 	public SendBean handleWorkflow(HermodBean workflowInput) throws WorkflowManagerException {

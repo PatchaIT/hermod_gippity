@@ -14,7 +14,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.UNKNOWN_CLASS;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IO01;
 
 /** This class keeps application static utility methods with a general scope. */
@@ -39,7 +41,16 @@ public class HermodUtils {
 	 * @return the ConnectionFactory from supplied URL
 	 */
 	public static ConnectionFactory getConnectionFactory(String connectionFactoryUrl) {
-		return new ActiveMQConnectionFactory(connectionFactoryUrl);
+		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(connectionFactoryUrl);
+
+		//factory.setTrustAllPackages(true); // uncomment and replace for debug purposes only
+		factory.setTrustedPackages(List.of(
+				"java.lang",
+				"java.util",
+				"it.patcha.hermod.gpt"
+		));
+
+		return factory;
 	}
 
 	/**
@@ -84,7 +95,7 @@ public class HermodUtils {
 
 		if (!StringUtils.isEmpty(message))
 			message = String.format("[%s%s]%s : %s",
-					clazz != null ? getSimpleName(clazz) : "Unknown class",
+					clazz != null ? getSimpleName(clazz) : UNKNOWN_CLASS,
 					cause != null ? " - " + getSimpleName(cause) : "",
 					code != null ? " " + code : "",
 					message);
@@ -234,7 +245,7 @@ public class HermodUtils {
 
 		String message = oldException.getMessage();
 		if (code == null)
-			code = oldException instanceof HermodException ? ((HermodException) oldException).getCode() : null;
+			code = oldException instanceof HermodException hermodexception ? hermodexception.getCode() : null;
 
 		try {
 			if (format)

@@ -31,12 +31,12 @@ class ArgsBeanTest extends HermodBaseTest {
 	private ArgsBean argsBean;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		args = new String[]{
-				ARG_CONNECTION_FACTORY_URL, CONNECTION_FACTORY_URL,
-				ARG_REQUEST_QUEUE_NAME, REQUEST_QUEUE_NAME,
-				ARG_JMS_MESSAGE_TEXT, JMS_MESSAGE_TEXT,
-				ARG_JMS_MESSAGE_FILE_PATH, JMS_MESSAGE_FILE_PATH
+				argConnectionFactoryUrl, valConnectionFactoryUrl,
+				argRequestQueueName, valRequestQueueName,
+				argJmsMessageText, valJmsMessageText,
+				argJmsMessageFilePath, valJmsMessageFilePath
 		};
 
 		argsBean = new ArgsBean();
@@ -50,10 +50,10 @@ class ArgsBeanTest extends HermodBaseTest {
 
 			argsBean.setArgs(args);
 			String[] result = argsBean.getArgs();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected("... \n" + Arrays.toString(args));
-			assertEquals(args, result, getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(args, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), "\n" + Arrays.toString(result));
 
@@ -69,12 +69,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			argsBean.setMessageText(JMS_MESSAGE_TEXT);
+			argsBean.setMessageText(valJmsMessageText);
 			String result = argsBean.getMessageText();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(JMS_MESSAGE_TEXT);
-			assertEquals(JMS_MESSAGE_TEXT, result, getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(valJmsMessageText);
+			assertEqualsToLog(valJmsMessageText, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -90,12 +90,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			argsBean.setMessageFile(JMS_MESSAGE_FILE);
+			argsBean.setMessageFile(objJmsMessageFile);
 			File result = argsBean.getMessageFile();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(JMS_MESSAGE_FILE.toString());
-			assertEquals(JMS_MESSAGE_FILE, result, getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(objJmsMessageFile.toString());
+			assertEqualsToLog(objJmsMessageFile, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -111,12 +111,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			argsBean.setMessageFilePath(JMS_MESSAGE_FILE_PATH);
+			argsBean.setMessageFilePath(valJmsMessageFilePath);
 			File result = argsBean.getMessageFile();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(JMS_MESSAGE_FILE.toString());
-			assertEquals(JMS_MESSAGE_FILE, result, getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(objJmsMessageFile.toString());
+			assertEqualsToLog(objJmsMessageFile, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -132,12 +132,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			argsBean.setRequestQueueName(REQUEST_QUEUE_NAME);
+			argsBean.setRequestQueueName(valRequestQueueName);
 			String result = argsBean.getRequestQueueName();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(REQUEST_QUEUE_NAME);
-			assertEquals(REQUEST_QUEUE_NAME, result, getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(valRequestQueueName);
+			assertEqualsToLog(valRequestQueueName, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -153,12 +153,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			argsBean.setReplyQueueName(REPLY_QUEUE_NAME);
+			argsBean.setReplyQueueName(valReplyQueueName);
 			String result = argsBean.getReplyQueueName();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(REPLY_QUEUE_NAME);
-			assertEquals(REPLY_QUEUE_NAME, result, getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(valReplyQueueName);
+			assertEqualsToLog(valReplyQueueName, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -174,12 +174,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			argsBean.setConnectionFactoryUrl(CONNECTION_FACTORY_URL);
+			argsBean.setConnectionFactoryUrl(valConnectionFactoryUrl);
 			String result = argsBean.getConnectionFactoryUrl();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(CONNECTION_FACTORY_URL);
-			assertEquals(CONNECTION_FACTORY_URL, result, getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(valConnectionFactoryUrl);
+			assertEqualsToLog(valConnectionFactoryUrl, result, getEndTestLog(TEST_AND_KO));
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -190,28 +190,17 @@ class ArgsBeanTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testEquals(TestInfo testInfo) throws Exception {
+	void testEquals_True(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_TRUE.toString());
 			logger.debug(getStartTestLog());
 
 			boolean result = argsBean.equals(new ArgsBean());
-			assertTrue(result, getEndTestLogKO());
+			assertTrueToLog(result, getEndTestLogKO());
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
 			result = argsBean.equals(argsBean);
-			assertTrue(result, getEndTestLog(TEST_AND_KO));
-			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
-
-			swapInfoExpected(EXP_FALSE.toString());
-
-			result = argsBean.equals(new SendBean());
-			assertFalse(result, getEndTestLog(TEST_AND_KO));
-			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
-
-			argsBean.setSuccessful(true);
-			result = argsBean.equals(new ArgsBean());
-			assertFalse(result, getEndTestLog(TEST_AND_KO));
+			assertTrueToLog(result, getEndTestLog(TEST_AND_KO));
 			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
 
 		} catch (Exception e) {
@@ -221,7 +210,28 @@ class ArgsBeanTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testHashCode(TestInfo testInfo) throws Exception {
+	void testEquals_False(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_FALSE.toString());
+			logger.debug(getStartTestLog());
+
+			boolean result = argsBean.equals(new SendBean());
+			assertFalseToLog(result, getEndTestLogKO());
+			logger.debug("{}{}", getEndTestLogOK(), result);
+
+			argsBean.setSuccessful(true);
+			result = argsBean.equals(new ArgsBean());
+			assertFalseToLog(result, getEndTestLog(TEST_AND_KO));
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testHashCode_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_TRUE.toString());
 			logger.debug(getStartTestLog());
@@ -230,20 +240,32 @@ class ArgsBeanTest extends HermodBaseTest {
 			int again = argsBean.hashCode();
 			int another = new ArgsBean().hashCode();
 
-			assertEquals(again, result, getEndTestLogKO());
-			assertEquals(another, result, getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(again, result, getEndTestLogKO());
+			assertEqualsToLog(another, result, getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(Integer.toString(result));
 			logger.debug("{}{}", getEndTestLogOK(), another);
 
-			swapInfoExpected(EXP_FALSE.toString());
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testHashCode_KO(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_TRUE.toString());
+			logger.debug(getStartTestLog());
+
+			int current = argsBean.hashCode();
 
 			argsBean.setSuccessful(true);
-			result = argsBean.hashCode();
-			assertNotEquals(again, result, getEndTestLogKO());
+			int result = argsBean.hashCode();
+			assertNotEqualsToLog(current, result, getEndTestLogKO());
 
-			swapInfoExpected("not " + again);
-			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
+			swapInfoExpected("not " + current);
+			logger.debug("{}{}", getEndTestLogOK(), result);
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -258,12 +280,12 @@ class ArgsBeanTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			String result = argsBean.toString();
-			assertNotNull(result, getEndTestLogKO());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), "\n" + result);
 
 			swapInfoExpected(EXP_TRUE.toString());
-			assertTrue(result.contains(TO_STRING_EMPTY), getEndTestLog(TEST_AND_KO));
+			assertTrueToLog(result.contains(TO_STRING_EMPTY), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected("... \ncontains: " + TO_STRING_EMPTY);
 			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), "\n" + result);

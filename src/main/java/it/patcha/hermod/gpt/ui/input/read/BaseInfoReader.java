@@ -76,6 +76,8 @@ public abstract class BaseInfoReader extends HermodClass implements InfoReader {
 	 * @return the wanted exception with formatted message
 	 */
 	protected InfoReaderException formatInfoReaderException(ErrorType errorType, Throwable cause) {
+		if (errorType == null)
+			return formatInfoReaderException(null, null, cause);
 		return formatInfoReaderException(errorType.getMessage(), errorType.getCode(), cause);
 	}
 

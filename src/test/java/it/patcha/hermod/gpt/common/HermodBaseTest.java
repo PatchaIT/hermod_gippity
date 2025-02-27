@@ -9,32 +9,25 @@ import it.patcha.hermod.gpt.common.constant.HermodConstants.BackgroundColor;
 import it.patcha.hermod.gpt.common.constant.HermodConstants.TextColor;
 import it.patcha.hermod.gpt.common.error.HermodException;
 import it.patcha.hermod.gpt.common.error.codes.ErrorType;
+import jakarta.jms.ConnectionFactory;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.function.TriConsumer;
-import org.apache.commons.lang3.function.TriFunction;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
-import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.Serial;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.Args;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_CLASS;
@@ -49,11 +42,11 @@ import static it.patcha.hermod.gpt.common.error.codes.ErrorType.TT01;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
-/** Base abstract class to be father of all application unit tests. */
+/** Abstract class with base tests for all application unit tests which must extend this. */
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public abstract class HermodBaseTest {
+public abstract class HermodBaseTest extends AssertWrapper {
 	// Test delimiters' templates
 	/** To format as: {@code String.format(LOG_TEMPLATE, Separator)} */
 	public static final String LOG_TEMPLATE = " %s ";
@@ -112,36 +105,33 @@ public abstract class HermodBaseTest {
 	public static final String LOG_DEF_EXPECTED = " Expected %s,";
 
 	// Common use test values (not static for comfort reasons)
-	protected final String EMPTY = HermodConstants.EMPTY;
-	protected final String ARG_CONNECTION_FACTORY_URL = HermodConstants.ARG_CONNECTION_FACTORY_URL;
-	protected final String CONNECTION_FACTORY_URL = "tcp://localhost:61616";
-	protected final String ARG_REQUEST_QUEUE_NAME = HermodConstants.ARG_REQUEST_QUEUE_NAME;
-	protected final String REQUEST_QUEUE_NAME = "testRequestQueue";
-	protected final String ARG_REPLY_QUEUE_NAME = HermodConstants.ARG_REPLY_QUEUE_NAME;
-	protected final String REPLY_QUEUE_NAME = "testReplyQueue";
-	protected final String ARG_JMS_MESSAGE_TEXT = HermodConstants.ARG_JMS_MESSAGE_TEXT;
-	protected final String JMS_MESSAGE_TEXT = "Hello, World!";
-	protected final String ARG_JMS_MESSAGE_FILE_PATH = HermodConstants.ARG_JMS_MESSAGE_FILE_PATH;
-	protected final String JMS_MESSAGE_FILE_PATH = "message.test";
-	protected final File JMS_MESSAGE_FILE = new File(JMS_MESSAGE_FILE_PATH);
-	protected final ErrorType ERROR_TYPE = TT01;
-	protected final String ERROR_CODE = "TT01";
-	protected final String ERROR_MESSAGE = "Error message for test";
-	protected final TestHermodException ERROR_CAUSE = new TestHermodException(ERROR_TYPE, new TestHermodException(ERROR_MESSAGE));
-	protected final Exception ERROR_THROWABLE = new RuntimeException(ERROR_MESSAGE, new RuntimeException(ERROR_MESSAGE));
+	protected final String empty = HermodConstants.EMPTY;
+	protected final String argGui = Args.GUI.toString();
+	protected final String argConnectionFactoryUrl = Args.CONNECTION_FACTORY_URL.toString();
+	protected final String valConnectionFactoryUrl = "tcp://localhost:61616";
+	protected final ConnectionFactory objConnectionFactory = new ActiveMQConnectionFactory(valConnectionFactoryUrl);
+	protected final String argRequestQueueName = Args.REQUEST_QUEUE_NAME.toString();
+	protected final String valRequestQueueName = "testRequestQueue";
+	protected final String argReplyQueueName = Args.REPLY_QUEUE_NAME.toString();
+	protected final String valReplyQueueName = "testReplyQueue";
+	protected final String argJmsMessageText = Args.JMS_MESSAGE_TEXT.toString();
+	protected final String valJmsMessageText = "Hello, World!";
+	protected final String argJmsMessageFilePath = Args.JMS_MESSAGE_FILE_PATH.toString();
+	protected final String valJmsMessageFilePath = "message.test";
+	protected final File objJmsMessageFile = new File(valJmsMessageFilePath);
+	protected final ErrorType errorType = TT01;
+	protected final String errorCode = "TT01";
+	protected final String errorMessage = "Error message for test";
+	protected final TestHermodException errorCause = new TestHermodException(errorType, new TestHermodException(errorMessage));
+	protected final Exception errorThrowable = new RuntimeException(errorMessage, new RuntimeException(errorMessage));
 
 	// Test attributes
 	@Autowired
 	protected ApplicationContext context;
 
-	protected Logger logger;
 	protected boolean first = true;
 
 	protected HermodTestInfo hermodTestInfo;
-
-	public HermodBaseTest() {
-		this.logger = LoggerFactory.getLogger(this.getClass());
-	}
 
 	@BeforeEach
 	void setUpBeforeAll() {
@@ -157,7 +147,7 @@ public abstract class HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_TRUE.toString());
 			logger.debug(getStartTestLog(TEST_GO_ABS.toString()));
 
-			assertTrue(true, getEndTestLog(TEST_KO_ABS) +
+			assertTrueToLog(true, getEndTestLog(TEST_KO_ABS) +
 					TextColor.MAGENTA + "; ❌ test framework is not up and running." + HermodConstants.RESET_ALL);
 
 			logger.debug("{}{}{}{}{}", getEndTestLog(TEST_OK_ABS), true,
@@ -175,7 +165,7 @@ public abstract class HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog(TEST_GO_ABS.toString()));
 
-			assertNotNull(context, getEndTestLog(TEST_KO_ABS) +
+			assertNotNullToLog(context, getEndTestLog(TEST_KO_ABS) +
 					TextColor.MAGENTA + " ❌ test context load failed." + HermodConstants.RESET_ALL);
 
 			logger.debug("{}{}{}{}{}{}", getEndTestLog(TEST_OK_ABS),
@@ -300,27 +290,6 @@ public abstract class HermodBaseTest {
 	}
 
 	/**
-	 * Concat {@code message.toString()} with {@code actual.toString()},
-	 *   returning {@code message} + {@code actual}.
-	 * </p>
-	 * If {@code message} is {@code empty},
-	 *   then {@code null} will be returned.
-	 *
-	 * @param concat what you want to concatenate to {@code message}
-	 * @param message the message after which {@code actual} have to be concatenated
-	 * @return {@code message} + {@code actual}, if {@code message} is not {@code empty},
-	 *   otherwise {@code null}
-	 * @param <T> the type of {@code actual},
-	 *   {@code actual.toString()} will be concatenated
-	 */
-	protected <T, U> String concatToMessage(T concat, U message) {
-		return !ObjectUtils.isEmpty(message) ?
-				message.toString() + (
-						!ObjectUtils.isEmpty(concat) ? concat : "") :
-				"";
-	}
-
-	/**
 	 * Given an {@code appender} already added to the right {@link ch.qos.logback.classic.Logger}
 	 *   instance, this method allows to check if the {@code message} was logged
 	 *   at the right logging {@code level}.
@@ -336,7 +305,7 @@ public abstract class HermodBaseTest {
 	 */
 	protected boolean checkIntoLogs(String message, Level level, Appender<ILoggingEvent> appender) {
 		ArgumentCaptor<ILoggingEvent> logCaptor = ArgumentCaptor.forClass(ILoggingEvent.class);
-		assertDoesNotThrow(() -> verify(appender, atLeastOnce()), getEndTestLogKO()).doAppend(logCaptor.capture());
+		assertDoesNotThrowToLog(() -> verify(appender, atLeastOnce()), getEndTestLogKO()).doAppend(logCaptor.capture());
 
 		return logCaptor.getAllValues().stream()
 				.anyMatch(event ->
@@ -344,315 +313,10 @@ public abstract class HermodBaseTest {
 						message.equals(event.getFormattedMessage()));
 	}
 
-	// Assertions wrappers
-
-	/**
-	 * Designed to provide a wrapper for {@code void} {@link Assertions}
-	 *   static methods, which will eventually log the AssertionError if cast.
-	 * </p>
-	 * Possible use:
-	 * {@code logAssertError(Assertions::assertNotNull, actual, message);},
-	 *   where the second parameter can be {@code (String) null} if unwanted.
-	 *
-	 * @param function lambda call to static assertion method from {@link Assertions}
-	 * @param actual what you want to be checked for the assertion
-	 * @param message the failure message to supply and log
-	 * @param <T> the type of want to be checked for the assertion
-	 * @param <U> the type of the failure message to supply and log
-	 */
-	private <T, U> void logAssertionError(BiConsumer<T, U> function, T actual, U message) {
-		try {
-			function.accept(actual, message);
-
-		} catch (AssertionError ae) {
-			logger.debug(message.toString(), ae);
-			throw ae;
-		}
-	}
-
-	/**
-	 * Designed to provide a wrapper for {@code void} {@link Assertions}
-	 *   static methods with three parameters, which will eventually
-	 *   log the AssertionError if cast.
-	 * </p>
-	 * Possible use:
-	 * {@code logAssertError(Assertions::assertEquals, expected, actual, message);},
-	 *   where the third parameter can be {@code (String) null} if unwanted.
-	 *
-	 * @param function lambda call to static assertion method from {@link Assertions}
-	 * @param expected what do you expect to be {@code actual}
-	 * @param actual what you want to be checked for the assertion
-	 * @param message the failure message to supply and log
-	 * @param <T> the type of want you want to compare to {@code actual}
-	 * @param <U> the type of want to be checked for the assertion
-	 * @param <V> the type of the failure message to supply and log
-	 */
-	private <T, U, V> void logAssertionError(TriConsumer<T, U, V> function, T expected, U actual, V message) {
-		try {
-			function.accept(expected, actual, message);
-
-		} catch (AssertionError ae) {
-			logger.debug(message.toString(), ae);
-			throw ae;
-		}
-	}
-
-	/**
-	 * Designed to provide a wrapper for {@code void} {@link Assertions}
-	 *   static methods, which will eventually log the AssertionError if cast.
-	 * </p>
-	 * Possible use:
-	 * {@code logAssertError(Assertions::assertDoesNotThrow, actual, message);},
-	 *   where the second parameter can be {@code (String) null} if unwanted.
-	 *
-	 * @param function lambda call to static assertion method from {@link Assertions}
-	 * @param actual what you want to be checked for the assertion
-	 * @param message the failure message to supply and log
-	 * @param <T> the type of want to be checked for the assertion
-	 * @param <U> the type of the failure message to supply and log
-	 */
-	private <T, U, R> R logAssertionErrorReturn(BiFunction<T, U, R> function, T actual, U message) {
-		try {
-			return function.apply(actual, message);
-
-		} catch (AssertionError ae) {
-			logger.debug(message.toString(), ae);
-			throw ae;
-		}
-	}
-
-	/**
-	 * Designed to provide a wrapper for {@code void} {@link Assertions}
-	 *   static methods with three parameters, which will eventually
-	 *   log the AssertionError if cast.
-	 * </p>
-	 * Possible use:
-	 * {@code logAssertError(Assertions::assertNotNull, actual, message);},
-	 *   where the third parameter can be {@code (String) null} if unwanted.
-	 *
-	 * @param function lambda call to static assertion method from {@link Assertions}
-	 * @param expected what do you expect to be {@code actual}
-	 * @param actual what you want to be checked for the assertion
-	 * @param message the failure message to supply and log
-	 * @param <T> the type of want you want to compare to {@code actual}
-	 * @param <U> the type of want to be checked for the assertion
-	 * @param <V> the type of the failure message to supply and log
-	 */
-	private <T, U, V, R> R logAssertionErrorReturn(TriFunction<T, U, V, R> function, T expected, U actual, V message) {
-		try {
-			return function.apply(expected, actual, message);
-
-		} catch (AssertionError ae) {
-			logger.debug(message.toString(), ae);
-			throw ae;
-		}
-	}
-
-	/**
-	 * <em>Assert</em> that the supplied {@code condition} is {@code true}.
-	 * <p>
-	 * Fails with the supplied failure {@code message + actual}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + actual}.
-	 *
-	 * @param condition the boolean to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code condition} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertTrue(boolean condition, String message) {
-		logAssertionError(Assertions::assertTrue, condition, concatToMessage(condition, message));
-	}
-
-	/**
-	 * <em>Assert</em> that the supplied {@code condition} is {@code false}.
-	 * <p>
-	 * Fails with the supplied failure {@code message + actual}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + actual}.
-	 *
-	 * @param condition the boolean to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code condition} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertFalse(boolean condition, String message) {
-		logAssertionError(Assertions::assertFalse, condition, concatToMessage(condition, message));
-	}
-
-	/**
-	 * <em>Assert</em> that {@code actual} is {@code null}.
-	 * <p>
-	 * Fails with the supplied failure {@code message + actual}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + actual}.
-	 *
-	 * @param actual the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code actual} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertNull(Object actual, String message) {
-		logAssertionError(Assertions::assertNull, actual, concatToMessage(actual, message));
-	}
-
-	/**
-	 * <em>Assert</em> that {@code actual} is not {@code null}.
-	 * <p>
-	 * Fails with the supplied failure {@code message + actual}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + actual}.
-	 *
-	 * @param actual the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code actual} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertNotNull(Object actual, String message) {
-		logAssertionError(Assertions::assertNotNull, actual, concatToMessage(actual, message));
-	}
-
-	/**
-	 * <em>Assert</em> that {@code expected} and {@code actual} are equal.
-	 * <p>
-	 * If both are {@code null}, they are considered equal.
-	 * </p>
-	 * Fails with the supplied failure {@code message + actual}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * <p>
-	 * Failure message will also be sent to log.
-	 * </p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + actual}.
-	 *
-	 * @param expected what do you expect to be {@code actual}
-	 * @param actual the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code actual} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertEquals(Object expected, Object actual, String message) {
-		logAssertionError(Assertions::assertEquals, expected, actual, concatToMessage(actual, message));
-	}
-
-	/**
-	 * <em>Assert</em> that {@code expected} and {@code actual} are not equal.
-	 * <p>
-	 * Fails if both are {@code null}.
-	 * </p>
-	 * Fails with the supplied failure {@code message + actual}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * <p>
-	 * Failure message will also be sent to log.
-	 * </p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + actual}.
-	 *
-	 * @param expected what do you expect to be {@code actual}
-	 * @param actual the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code actual} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertNotEquals(Object expected, Object actual, String message) {
-		logAssertionError(Assertions::assertNotEquals, expected, actual, concatToMessage(actual, message));
-	}
-
-	/**
-	 * <em>Assert</em> that execution of the supplied {@code executable} throws
-	 *   an exception of the {@code expectedType} and return the exception.
-	 * <p>
-	 * Fails with the supplied failure {@code message + supplier}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + supplier}.
-	 *
-	 * @param expectedType the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code supplier} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 * @return the instance returned by the {@code supplier}
-	 * @param <T> the type of returned object
-	 */
-	protected <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable, String message) {
-		return logAssertionErrorReturn(Assertions::assertThrows, expectedType, executable, concatToMessage(executable, message));
-	}
-
-	/**
-	 * <em>Assert</em> that execution of the supplied {@code supplier} does
-	 * <em>not</em> throw any kind of {@link Throwable}.
-	 * <p>
-	 * Fails with the supplied failure {@code message + supplier}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + supplier}.
-	 *
-	 * @param supplier the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code supplier} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 * @return the instance returned by the {@code supplier}
-	 * @param <T> the type of returned object
-	 */
-	protected <T> T assertDoesNotThrow(ThrowingSupplier<T> supplier, String message) {
-		return logAssertionErrorReturn(Assertions::assertDoesNotThrow, supplier, concatToMessage(supplier, message));
-	}
-
-	/**
-	 * <em>Assert</em> that execution of the supplied {@code executable} does
-	 * <em>not</em> throw any kind of {@link Throwable}.
-	 * <p>
-	 * Fails with the supplied failure {@code message + executable}.
-	 * If {@code message} is empty, default failure message will be used.
-	 * </p>
-	 * Failure message will also be sent to log.
-	 * <p>
-	 * In case of AssertionError, it will also add the stacktrace
-	 *   to {@code message + executable}.
-	 *
-	 * @param executable the object to check for the assertion
-	 * @param message the failure message to supply and log,
-	 *   {@code executable} will be appended to the message;
-	 *   if {@code message} is empty, default failure message will be adopted
-	 *   and logged, instead.
-	 */
-	protected void assertDoesNotThrow(Executable executable, String message) {
-		logAssertionError(Assertions::assertDoesNotThrow, executable, concatToMessage(executable, message));
-	}
-
 	/** An extension of HermodException used only for test purposes */
 	public static class TestHermodException extends HermodException {
-		@Serial private static final long serialVersionUID = 7295198888273346093L;
+		@Serial
+		private static final long serialVersionUID = 7295198888273346093L;
 		public TestHermodException() {}
 		public TestHermodException(String message) {super(message);}
 		public TestHermodException(ErrorType errorType, Throwable cause) {

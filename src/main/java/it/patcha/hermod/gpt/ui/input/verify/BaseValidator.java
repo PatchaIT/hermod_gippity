@@ -61,6 +61,8 @@ public abstract class BaseValidator extends HermodClass implements Validator {
 	 * @return the wanted exception with formatted message
 	 */
 	protected ValidatorException formatValidatorException(ErrorType errorType, Throwable cause) {
+		if (errorType == null)
+			return formatValidatorException(null, null, cause);
 		return formatValidatorException(errorType.getMessage(), errorType.getCode(), cause);
 	}
 

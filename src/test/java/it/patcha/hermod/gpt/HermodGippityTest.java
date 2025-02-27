@@ -11,12 +11,12 @@ import it.patcha.hermod.gpt.common.bean.ui.input.ArgsBean;
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
 import it.patcha.hermod.gpt.common.util.HermodUtils;
 import it.patcha.hermod.gpt.config.SpringConfig;
+import it.patcha.hermod.gpt.ui.input.dispatch.common.error.JobDispatcherException;
 import it.patcha.hermod.gpt.ui.input.dispatch.main.MainJobDispatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,6 +30,7 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -38,9 +39,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
-public class HermodGippityTest extends HermodBaseTest {
+class HermodGippityTest extends HermodBaseTest {
 
-	@InjectMocks
+	public static final String OUTCOME_POSITIVE = "0";
+	public static final String OUTCOME_NEGATIVE = "1";
+	public static final String OUTCOME_EXCEPTION = "-1";
+	public static final String LOG_FOUND = "log found = ";
+
 	private HermodGippity hermodGippity;
 
 	@Mock
@@ -62,21 +67,23 @@ public class HermodGippityTest extends HermodBaseTest {
 	@BeforeEach
 	void setUp() {
 		args = new String[]{
-				ARG_CONNECTION_FACTORY_URL, CONNECTION_FACTORY_URL,
-				ARG_REQUEST_QUEUE_NAME, REQUEST_QUEUE_NAME,
-				ARG_JMS_MESSAGE_TEXT, JMS_MESSAGE_TEXT,
-				ARG_JMS_MESSAGE_FILE_PATH, JMS_MESSAGE_FILE_PATH
+				argConnectionFactoryUrl, valConnectionFactoryUrl,
+				argRequestQueueName, valRequestQueueName,
+				argJmsMessageText, valJmsMessageText,
+				argJmsMessageFilePath, valJmsMessageFilePath
 		};
 
 		argsBean = new ArgsBean(args);
 		sendBean = new SendBean();
 		sendBean.setSuccessful(true);
+
+		hermodGippity = new HermodGippity(mainJobDispatcher);
 	}
 
 	@Test
-	void testMain(TestInfo testInfo) throws Exception {
+	void testMain_OK(TestInfo testInfo) throws Exception {
 		try {
-			enrichTestInfo(testInfo, "log found = " + EXP_TRUE.toString());
+			enrichTestInfo(testInfo, LOG_FOUND + EXP_TRUE);
 			logger.debug(getStartTestLog());
 
 			Logger rootLogger = (Logger) LoggerFactory.getLogger(HermodGippity.class);
@@ -90,20 +97,14 @@ public class HermodGippityTest extends HermodBaseTest {
 				HermodGippity.main(args);
 
 				boolean result = checkIntoLogs(HermodConstants.MAIN_POSITIVE_LOG, Level.INFO, logAppender);
-				assertTrue(result, getEndTestLogOK());
+				assertTrueToLog(result, getEndTestLogOK());
 				logger.debug("{}{}", getEndTestLogOK(), result);
 
-				doReturn(1).when(mockHermodGippity).run(args);
-				HermodGippity.main(args);
-
-				result = checkIntoLogs(HermodConstants.MAIN_NEGATIVE_LOG, Level.INFO, logAppender);
-				assertTrue(result, getEndTestLog(TEST_AND_OK));
-				logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
-
 				swapInfoExpected(EXP_NO_EXCEPTION.toString());
-				assertDoesNotThrow(() -> hermodUtils.verify(() -> HermodUtils.getContext(SpringConfig.class), times(2)), getEndTestLog(TEST_AND_KO));
-				assertDoesNotThrow(() -> verify(mockContext, times(2)).getBean(HermodGippity.class), getEndTestLog(TEST_AND_KO));
-				assertDoesNotThrow(() -> verify(mockHermodGippity, times(2)).run(args), getEndTestLog(TEST_AND_KO));
+				assertDoesNotThrowToLog(() -> hermodUtils.verify(() -> HermodUtils.getContext(SpringConfig.class)), getEndTestLog(TEST_AND_KO));
+				assertDoesNotThrowToLog(() -> verify(mockContext).getBean(HermodGippity.class), getEndTestLog(TEST_AND_KO));
+				assertDoesNotThrowToLog(() -> verify(mockHermodGippity).run(args), getEndTestLog(TEST_AND_KO));
+
 				logger.debug("{}{}", getEndTestLog(TEST_AND_OK), EXP_NO_EXCEPTION);
 			}
 
@@ -114,17 +115,119 @@ public class HermodGippityTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testRun(TestInfo testInfo) throws Exception {
+	void testMain_KO(TestInfo testInfo) throws Exception {
 		try {
-			enrichTestInfo(testInfo, "1");
+			enrichTestInfo(testInfo, LOG_FOUND + EXP_TRUE);
+			logger.debug(getStartTestLog());
+
+			Logger rootLogger = (Logger) LoggerFactory.getLogger(HermodGippity.class);
+			rootLogger.addAppender(logAppender);
+
+			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
+				hermodUtils.when(() -> HermodUtils.getContext(SpringConfig.class)).thenReturn(mockContext);
+				doReturn(mockHermodGippity).when(mockContext).getBean(HermodGippity.class);
+
+				doReturn(1).when(mockHermodGippity).run(args);
+				HermodGippity.main(args);
+
+				boolean result = checkIntoLogs(HermodConstants.MAIN_NEGATIVE_LOG, Level.INFO, logAppender);
+				assertTrueToLog(result, getEndTestLogOK());
+				logger.debug("{}{}", getEndTestLogOK(), result);
+
+				swapInfoExpected(EXP_NO_EXCEPTION.toString());
+				assertDoesNotThrowToLog(() -> hermodUtils.verify(() -> HermodUtils.getContext(SpringConfig.class)), getEndTestLog(TEST_AND_KO));
+				assertDoesNotThrowToLog(() -> verify(mockContext).getBean(HermodGippity.class), getEndTestLog(TEST_AND_KO));
+				assertDoesNotThrowToLog(() -> verify(mockHermodGippity).run(args), getEndTestLog(TEST_AND_KO));
+
+				logger.debug("{}{}", getEndTestLog(TEST_AND_OK), EXP_NO_EXCEPTION);
+			}
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testRun_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, OUTCOME_POSITIVE);
 			logger.debug(getStartTestLog());
 
 			when(mainJobDispatcher.handleJobs(argsBean)).thenReturn(sendBean);
 
 			int result = hermodGippity.run(args);
+			assertEqualsToLog(OUTCOME_POSITIVE, Integer.toString(result), getEndTestLogKO());
 
-			assertDoesNotThrow(() -> verify(mainJobDispatcher).handleJobs(argsBean), getEndTestLogKO());
 			logger.debug("{}{}", getEndTestLogOK(), result);
+
+			swapInfoExpected(EXP_NO_EXCEPTION.toString());
+			assertDoesNotThrowToLog(() -> verify(mainJobDispatcher).handleJobs(argsBean), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), EXP_NO_EXCEPTION);
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testRun_KO(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, OUTCOME_NEGATIVE);
+			logger.debug(getStartTestLog());
+
+			sendBean.setSuccessful(false);
+			when(mainJobDispatcher.handleJobs(argsBean)).thenReturn(sendBean);
+
+			int result = hermodGippity.run(args);
+			assertEqualsToLog(OUTCOME_NEGATIVE, Integer.toString(result), getEndTestLogKO());
+
+			logger.debug("{}{}", getEndTestLogOK(), result);
+
+			when(mainJobDispatcher.handleJobs(argsBean)).thenReturn(null);
+
+			result = hermodGippity.run(args);
+			assertEqualsToLog(OUTCOME_NEGATIVE, Integer.toString(result), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
+
+			swapInfoExpected(EXP_NO_EXCEPTION.toString());
+			assertDoesNotThrowToLog(() -> verify(mainJobDispatcher, times(2)).handleJobs(argsBean), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), EXP_NO_EXCEPTION);
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testRun_Exception(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, OUTCOME_EXCEPTION);
+			logger.debug(getStartTestLog());
+
+			doThrow(new JobDispatcherException(errorMessage, errorCause)).when(mainJobDispatcher).handleJobs(argsBean);
+
+			int result = hermodGippity.run(args);
+			assertEqualsToLog(OUTCOME_EXCEPTION, Integer.toString(result), getEndTestLogKO());
+
+			logger.debug("{}{}", getEndTestLogOK(), result);
+
+			doThrow(new RuntimeException(errorMessage, errorCause)).when(mainJobDispatcher).handleJobs(argsBean);
+
+			result = hermodGippity.run(args);
+			assertEqualsToLog(OUTCOME_EXCEPTION, Integer.toString(result), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
+
+			swapInfoExpected(EXP_NO_EXCEPTION.toString());
+			assertDoesNotThrowToLog(() -> verify(mainJobDispatcher, times(2)).handleJobs(argsBean), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), EXP_NO_EXCEPTION);
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);

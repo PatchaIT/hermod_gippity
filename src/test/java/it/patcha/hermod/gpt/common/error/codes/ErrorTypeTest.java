@@ -12,30 +12,38 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_CONTAINS;
+import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_EXCEPTION;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_EMPTY;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
+import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.INVALID_DATA_TYPE;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
 class ErrorTypeTest extends HermodBaseTest {
 
+	public static final String ERROR_CODE_PREFIX_WRONG = "ZZZ";
+	public static final int ERROR_CODE_NUMBERS_WRONG = 999;
+	public static final String ERROR_CODE_WRONG = ERROR_CODE_PREFIX_WRONG + ERROR_CODE_NUMBERS_WRONG;
+	public static final String ERROR_MESSAGE_WRONG = "Wrong error message for test";
+
 	@Test
-	void testFromCodeNumber(TestInfo testInfo) throws Exception {
+	void testFromCodeNumber_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			List<ErrorType> result = ErrorType.fromCodeNumber(ERROR_TYPE.getCodeNumber());
-			assertNotNull(result, getEndTestLogKO());
+			List<ErrorType> result = ErrorType.fromCodeNumber(errorType.getCodeNumber());
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_EMPTY.toString());
-			assertFalse(result.isEmpty(), getEndTestLogKO());
+			assertFalseToLog(result.isEmpty(), getEndTestLogKO());
 
-			swapInfoExpected(EXP_CONTAINS.toString() + ERROR_TYPE);
-			assertTrue(result.contains(ERROR_TYPE), getEndTestLogKO());
+			swapInfoExpected(EXP_CONTAINS.toString() + errorType);
+			assertTrueToLog(result.contains(errorType), getEndTestLogKO());
 
-			logger.debug("{}{}{}", getEndTestLogOK(), EXP_CONTAINS, result.get(result.indexOf(ERROR_TYPE)));
+			logger.debug("{}{}{}", getEndTestLogOK(), EXP_CONTAINS, result.get(result.indexOf(errorType)));
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -44,21 +52,18 @@ class ErrorTypeTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testFromCodePrefix(TestInfo testInfo) throws Exception {
+	void testFromCodeNumber_KO(TestInfo testInfo) throws Exception {
 		try {
-			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + IllegalArgumentException.class.getName());
 			logger.debug(getStartTestLog());
 
-			List<ErrorType> result = ErrorType.fromCodePrefix(ERROR_TYPE.getCodePrefix());
-			assertNotNull(result, getEndTestLogKO());
+			IllegalArgumentException exception =
+					assertThrowsToLog(IllegalArgumentException.class, () -> ErrorType.fromCodeNumber(ERROR_CODE_NUMBERS_WRONG), getEndTestLogKO());
 
-			swapInfoExpected(EXP_NOT_EMPTY.toString());
-			assertFalse(result.isEmpty(), getEndTestLogKO());
+			swapInfoExpected(INVALID_DATA_TYPE + ERROR_CODE_NUMBERS_WRONG);
+			assertEqualsToLog(INVALID_DATA_TYPE + ERROR_CODE_NUMBERS_WRONG, exception.getMessage(), getEndTestLog(TEST_AND_KO));
 
-			swapInfoExpected(EXP_CONTAINS.toString() + ERROR_TYPE);
-			assertTrue(result.contains(ERROR_TYPE), getEndTestLogKO());
-
-			logger.debug("{}{}{}", getEndTestLogOK(), EXP_CONTAINS, result.get(result.indexOf(ERROR_TYPE)));
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -67,16 +72,59 @@ class ErrorTypeTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testFromCode(TestInfo testInfo) throws Exception {
+	void testFromCodePrefix_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			ErrorType result = ErrorType.fromCode(ERROR_TYPE.getCode());
-			assertNotNull(result, getEndTestLogKO());
+			List<ErrorType> result = ErrorType.fromCodePrefix(errorType.getCodePrefix());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(ERROR_TYPE.toString());
-			assertEquals(ERROR_TYPE, result, getEndTestLogKO());
+			swapInfoExpected(EXP_NOT_EMPTY.toString());
+			assertFalseToLog(result.isEmpty(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_CONTAINS.toString() + errorType);
+			assertTrueToLog(result.contains(errorType), getEndTestLogKO());
+
+			logger.debug("{}{}{}", getEndTestLogOK(), EXP_CONTAINS, result.get(result.indexOf(errorType)));
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFromCodePrefix_KO(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + IllegalArgumentException.class.getName());
+			logger.debug(getStartTestLog());
+
+			IllegalArgumentException exception =
+					assertThrowsToLog(IllegalArgumentException.class, () -> ErrorType.fromCodePrefix(ERROR_CODE_PREFIX_WRONG), getEndTestLogKO());
+
+			swapInfoExpected(INVALID_DATA_TYPE + ERROR_CODE_PREFIX_WRONG);
+			assertEqualsToLog(INVALID_DATA_TYPE + ERROR_CODE_PREFIX_WRONG, exception.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFromCode_OK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			ErrorType result = ErrorType.fromCode(errorType.getCode());
+			assertNotNullToLog(result, getEndTestLogKO());
+
+			swapInfoExpected(errorType.toString());
+			assertEqualsToLog(errorType, result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -87,18 +135,58 @@ class ErrorTypeTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testFromMessage(TestInfo testInfo) throws Exception {
+	void testFromCode_KO(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + IllegalArgumentException.class.getName());
+			logger.debug(getStartTestLog());
+
+			IllegalArgumentException exception =
+					assertThrowsToLog(IllegalArgumentException.class, () -> ErrorType.fromCode(ERROR_CODE_WRONG), getEndTestLogKO());
+
+			swapInfoExpected(INVALID_DATA_TYPE + ERROR_CODE_WRONG);
+			assertEqualsToLog(INVALID_DATA_TYPE + ERROR_CODE_WRONG, exception.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFromMessage_OK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			ErrorType result = ErrorType.fromMessage(ERROR_TYPE.getMessage());
-			assertNotNull(result, getEndTestLogKO());
+			ErrorType result = ErrorType.fromMessage(errorType.getMessage());
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(ERROR_TYPE.toString());
-			assertEquals(ERROR_TYPE, result, getEndTestLogKO());
+			swapInfoExpected(errorType.toString());
+			assertEqualsToLog(errorType, result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testFromMessage_KO(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_EXCEPTION + LOG_NL + IllegalArgumentException.class.getName());
+			logger.debug(getStartTestLog());
+
+			IllegalArgumentException exception =
+					assertThrowsToLog(IllegalArgumentException.class, () -> ErrorType.fromMessage(ERROR_MESSAGE_WRONG), getEndTestLogKO());
+
+			swapInfoExpected(INVALID_DATA_TYPE + ERROR_MESSAGE_WRONG);
+			assertEqualsToLog(INVALID_DATA_TYPE + ERROR_MESSAGE_WRONG, exception.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, exception.toString());
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
@@ -112,12 +200,12 @@ class ErrorTypeTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			String result = ERROR_TYPE.getCodePrefix();
-			assertNotNull(result, getEndTestLogKO());
+			String result = errorType.getCodePrefix();
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			String expected = ERROR_CODE.substring(0, 2);
+			String expected = errorCode.substring(0, 2);
 			swapInfoExpected(expected);
-			assertEquals(expected, result, getEndTestLogKO());
+			assertEqualsToLog(expected, result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -130,13 +218,13 @@ class ErrorTypeTest extends HermodBaseTest {
 	@Test
 	void testGetCodeNumber(TestInfo testInfo) throws Exception {
 		try {
-			int expected = Integer.decode(ERROR_CODE.substring(2));
+			int expected = Integer.decode(errorCode.substring(2));
 
 			enrichTestInfo(testInfo, Integer.toString(expected));
 			logger.debug(getStartTestLog());
 
-			int result = ERROR_TYPE.getCodeNumber();
-			assertEquals(expected, result, getEndTestLogKO());
+			int result = errorType.getCodeNumber();
+			assertEqualsToLog(expected, result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -152,11 +240,11 @@ class ErrorTypeTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			String result = ERROR_TYPE.getCode();
-			assertNotNull(result, getEndTestLogKO());
+			String result = errorType.getCode();
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(ERROR_CODE);
-			assertEquals(ERROR_CODE, result, getEndTestLogKO());
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
@@ -172,11 +260,11 @@ class ErrorTypeTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			String result = ERROR_TYPE.getMessage();
-			assertNotNull(result, getEndTestLogKO());
+			String result = errorType.getMessage();
+			assertNotNullToLog(result, getEndTestLogKO());
 
-			swapInfoExpected(ERROR_MESSAGE);
-			assertEquals(ERROR_MESSAGE, result, getEndTestLogKO());
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result, getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
