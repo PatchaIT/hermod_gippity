@@ -99,9 +99,12 @@ Version v0.0.1 is a work in progress in the branch
 * Code and classes implemented adopting a clear Separation of Concerns
 * Implemented maven-shade-plugin to generate a custom named executable fat jar
 * Implemented a logger
+* Implemented Lombok (replaced @Autowire )
 * Implemented SonarCloud to check code quality:
   [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity)
-* Partial tests coverage on SonarQube (84%) with jUnit5 + Mockito
+* Full tests coverage on SonarCloud with jUnit5 + Mockito
+* Full A Class on SonarCloud for Security, Reliability and Code Quality
+* Jacoco repots saved in HTML in Dark Mode colors locally (target/site ...)
 * Adopted the most recent versions of all dependencies
 * GitHub Workflow to share the artifact on Release
 
@@ -109,15 +112,6 @@ Version v0.0.1 is a work in progress in the branch
 
 Those starting with ! are those I'm currently working on.
 
-* [x] SonarCloud Security Rate A (was B)
-* [x] SonarCloud Reliability Rate A (was E)
-* [x] Replace @Autowire adoption with Lombok's @RequiredArgsConstructor
-        and align jUnit tests
-* [x] Adopting Lombok's @Getter and @Setter in Beans and Exceptions
-* [x] SonarCloud issues (was 2 Blk, 5 High, 22 Med, 30 Low, 1 Info)
-* [x] Jacoco repots saved in HTML in Dark Mode colors locally
-* [x] Splitting unit test methods
-* [ ] ! Full unit tests coverage on SonarCloud (was 84%) (local 95.7%)
 * [ ] Completing markdown documentation under doc
 
 Note: It is possible I'll commit code in 0.0.1 dedicated branch soon after
