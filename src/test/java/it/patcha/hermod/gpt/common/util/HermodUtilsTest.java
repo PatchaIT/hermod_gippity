@@ -627,7 +627,6 @@ class HermodUtilsTest extends HermodBaseTest {
 	public static class NoSimpleConstructorTestHermodException extends HermodException {
 		@Serial
 		private static final long serialVersionUID = 7295198888273346093L;
-		private NoSimpleConstructorTestHermodException() {}
 		public NoSimpleConstructorTestHermodException(String message) {super(message);}
 		public NoSimpleConstructorTestHermodException(ErrorType errorType, Throwable cause) {
 			super(errorType.getMessage(), errorType.getCode(), cause);
