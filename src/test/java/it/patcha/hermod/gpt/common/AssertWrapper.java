@@ -9,6 +9,13 @@ import org.junit.jupiter.api.function.ThrowingSupplier;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+/**
+ * Provides wrapper methods for {@link Assertions} to automatically log any
+ *   {@link AssertionError} using the logger of the calling class.
+ * <p>
+ * Non-static methods are used and inherited instead of static imports to
+ *   ensure that each assertion logs with the appropriate class-specific logger.
+ */
 public abstract class AssertWrapper extends HermodTestClass {
 
 	// Core code methods

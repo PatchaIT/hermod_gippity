@@ -1,7 +1,9 @@
 <!-- omit from toc -->
 # AI Chat Highlights
 
-[Go to Table of Contents](#table-of-contents)
+[Go to Table of Contents](#table-of-contents)  
+[Return to ReadMe](../../README.md)  
+[Return to Docs Index](../index.md)  
 
 ---
 
@@ -481,6 +483,7 @@ Here are my suggestions, based on common practices:
 
 ---
 
+<!-- omit from toc -->
 ## Table of Contents
 
 * [2024-12-22](#2024-12-22)
@@ -501,4 +504,3 @@ Here are my suggestions, based on common practices:
 * [2025-01-14](#2025-01-14)
   * [Choosing Colors for Development Status Levels](#choosing-colors-for-development-status-levels)
     * [Matching Colors to Status](#matching-colors-to-status)
-* [Table of Contents](#table-of-contents)

@@ -28,7 +28,7 @@ With this document, we keep track of which index was used by which Bean class.
 
 ### src/test/java
 
-0 `it.patcha.hermod.gpt.common.bean`.TestInfoBean
+0 `it.patcha.hermod.gpt.common.bean`.HermodTestInfo
 
 ### src/main/java
 

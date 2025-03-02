@@ -8,16 +8,16 @@
 
 Send message to JMS queue
 
+<!-- omit from toc -->
 ## Table of Contents
 
-* [Table of Contents](#table-of-contents)
 * [About The Project](#about-the-project)
   * [It is what it is](#it-is-what-it-is)
   * [It is an experiment](#it-is-an-experiment)
+  * [Documentation](#documentation)
 * [In Shorts](#in-shorts)
 * [Changelog](#changelog)
-* [Implementing in v0.0.1](#implementing-in-v001)
-  * [Implemented into dedicated branch](#implemented-into-dedicated-branch)
+* [Implementing in 0.0.2](#implementing-in-002)
   * [Under implementation in my local environment](#under-implementation-in-my-local-environment)
   * [Foreseen for future releases (not under development)](#foreseen-for-future-releases-not-under-development)
 
@@ -68,55 +68,56 @@ I know there are lot of new AI specialized to the needs of a developer, but
   purpose AI.
 
 Chat highlights with the AI:
-  [AI Chat Highlights for hermod_gippity Project](docs/ai-chat-highlights.md)
+  [AI Chat Highlights for hermod_gippity Project](docs/info/ai-chat-highlights.md)
+
+### Documentation
+
+The subfolder `docs` contains further documentation about this project.
+
+You can start browsing it from the [Index](docs/index.md) [WIP].
 
 ## In Shorts
 
 * Project: Hermod Gippity
-* Version: 0.0.1 - Skeleton
+* Version: 0.0.1
 * Description: Will send message to JMS queue, but at the moment does nothing.
 * Change: First implementation
-* Overlays: None
 * Made By: @PatchaIT
-* Update Date: 2024/12/22
+* Update Date: 2025/02/05
 
 * [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity&branch=main)
 
 ## Changelog
 
-* 2024/12/24 v0.0.1 - Skeleton
-  * Skeleton Upload and Update
+[Full Changelog](/docs/info/CHANGELOG.md)
+  can be found in `docs/info` folder.
 
-## Implementing in v0.0.1
+* [0.0.1] - 2025-02-05
+  * Fully (untested) implementation of a message send
+  * Fully defined folder structure
+  * Code and classes implemented adopting a clear Separation of Concerns
+  * Implemented maven-shade-plugin to generate a custom named executable fat jar
+  * Implemented a logger
+  * Implemented Lombok (replaced @Autowire )
+  * Implemented SonarCloud to check code quality:
+    [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity)
+  * Full tests coverage on SonarCloud with jUnit5 + Mockito
+  * A-Class rating on SonarCloud for Security, Reliability,
+    Maintainability and Code Quality
+  * Jacoco repots saved in HTML in Dark Mode colors locally (target/site ...)
+  * Adopted the most recent versions of all dependencies
+  * GitHub Workflow to share the artifact on Release
 
-Version v0.0.1 is a work in progress in the branch
-  [hermod_gippity_v0.0.1](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.1).
+## Implementing in 0.0.2
 
-### Implemented into dedicated branch
-
-* Fully (untested) implementation of a message send
-* Fully defined folder structure
-* Code and classes implemented adopting a clear Separation of Concerns
-* Implemented maven-shade-plugin to generate a custom named executable fat jar
-* Implemented a logger
-* Implemented Lombok (replaced @Autowire )
-* Implemented SonarCloud to check code quality:
-  [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity)
-* Full tests coverage on SonarCloud with jUnit5 + Mockito
-* Full A Class on SonarCloud for Security, Reliability and Code Quality
-* Jacoco repots saved in HTML in Dark Mode colors locally (target/site ...)
-* Adopted the most recent versions of all dependencies
-* GitHub Workflow to share the artifact on Release
+Version 0.0.1 is a work in progress in the branch
+  [hermod_gippity_v0.0.2](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.2).
 
 ### Under implementation in my local environment
 
 Those starting with ! are those I'm currently working on.
 
-* [ ] Completing markdown documentation under doc
-
-Note: It is possible I'll commit code in 0.0.1 dedicated branch soon after
-  SonarQube coverage and soon before markdown Documentation.
-But the pull into the main will be only after docs.
+* [ ] ! Completing markdown documentation under `docs`
 
 ### Foreseen for future releases (not under development)
 
