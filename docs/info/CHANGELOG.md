@@ -54,7 +54,7 @@ This document adheres to
 ## Links
 
 [unreleased](https://github.com/PatchaIT/hermod_gippity/compare/main...hermod_gippity_v0.0.1)  
-[0.0.1](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.1)  
+[0.0.1](https://github.com/PatchaIT/hermod_gippity/releases/tag/v0.0.1)  
 
 <!-- omit from toc -->
 ## Table of Contents
