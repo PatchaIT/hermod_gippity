@@ -33,9 +33,13 @@ jobs:
       - name: Zip JAR file
         run: zip hermod-gippity.jar target/*.jar
 
+      # Files check
+      - name: Debug File Listing
+        run: ls -lhtr
+
       # Upload artifact on release
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            hermod-gippity.zip
+            hermod-gippity.jar.zip
