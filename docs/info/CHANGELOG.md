@@ -29,7 +29,7 @@ This document adheres to
 * Code and classes implemented adopting a clear Separation of Concerns
 * Implemented maven-shade-plugin to generate a custom named executable fat jar
 * Implemented a logger
-* Implemented Lombok (deprecated use of @Autowire from Snapshot)
+* Implemented Lombok
 * Implemented SonarCloud to check code quality:
   [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity)
 * Full tests coverage on SonarCloud with jUnit5 + Mockito
@@ -37,6 +37,10 @@ This document adheres to
 * Jacoco repots saved in HTML in Dark Mode colors (`target/site/jacoco`)
 * Adopted the most recent versions of all dependencies
 * GitHub Workflow to share the artifact on Release
+
+### Deprecated - 0.0.1
+
+* No more using Spring's Autowired annotation
 
 ### Security - 0.0.1
 
@@ -63,6 +67,7 @@ This document adheres to
   * [Added - unreleased](#added---unreleased)
 * [\[0.0.1\] - 2025-02-05](#001---2025-02-05)
   * [Added - 0.0.1](#added---001)
+  * [Deprecated - 0.0.1](#deprecated---001)
   * [Security - 0.0.1](#security---001)
 * [\[Planned\]](#planned)
   * [Adding](#adding)

@@ -98,7 +98,8 @@ You can start browsing it from the [Index](docs/index.md) [WIP].
   * Code and classes implemented adopting a clear Separation of Concerns
   * Implemented maven-shade-plugin to generate a custom named executable fat jar
   * Implemented a logger
-  * Implemented Lombok (replaced @Autowire )
+  * Implemented Lombok (deprecated use of replaced Spring's Autowired
+    annotation from Snapshot)
   * Implemented SonarCloud to check code quality:
     [SonarCloud Project](https://sonarcloud.io/summary/overall?id=PatchaIT_hermod_gippity)
   * Full tests coverage on SonarCloud with jUnit5 + Mockito
