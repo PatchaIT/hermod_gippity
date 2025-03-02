@@ -31,7 +31,7 @@ jobs:
 
       # Zip artifact
       - name: Zip JAR file
-        run: zip hermod-gippity.jar target/*.jar
+        run: zip hermod-gippity.zip target/hermod-gippity.jar
 
       # Files check
       - name: Debug File Listing
@@ -42,4 +42,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            hermod-gippity.jar.zip
+            hermod-gippity.zip
