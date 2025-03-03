@@ -1,7 +1,7 @@
 <!-- omit from toc -->
 # hermod_gippity
 
-[![development status | 2 - pre-alpha](https://img.shields.io/badge/development_status-2_--_pre--alpha-cyan)](https://pypi.org/classifiers/)
+[![development status | 4 - beta](https://img.shields.io/badge/development_status-4_--_beta-blue)](https://pypi.org/classifiers/)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![release](https://img.shields.io/github/v/release/PatchaIT/hermod_gippity)
 [![next](https://img.shields.io/badge/next-v0.0.1-yellow)](https://github.com/PatchaIT/hermod_gippity/tree/hermod_gippity_v0.0.1)
