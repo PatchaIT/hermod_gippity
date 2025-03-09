@@ -31,7 +31,11 @@ jobs:
 
       # Zip artifact
       - name: Zip JAR file
-        run: zip hermod-gippity.zip target/hermod-gippity.jar
+        run: zip -j hermod-gippity.zip target/hermod-gippity.jar
+
+      # Add to zip the docs folder
+      - name: Add to Zip the DOCS folder
+        run: zip -ur hermod-gippity.zip docs
 
       # Files check
       - name: Debug File Listing
