@@ -8,10 +8,10 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>hermod_gippity.log</file>
+		<file>hermod-gippity.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- File name pattern -->
-			<fileNamePattern>logs/%d{yyyyMM}/hermod_gippity_%d{yyyyMMdd_HHmmss_SSS}.log.zip</fileNamePattern>
+			<fileNamePattern>logs/%d{yyyyMM}/hermod-gippity_%d{yyyyMMdd_HHmmss_SSS}.log.zip</fileNamePattern>
 			<maxFileSize>25MB</maxFileSize>
 		</rollingPolicy>
 		<encoder>
@@ -24,7 +24,15 @@
 		<appender-ref ref="FILE" />
 	</logger>
 
-	<root level="INFO">
+	<logger name="it.patcha.hermod.gpt" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="ch.qos.logback" level="ERROR" />
+	<logger name="org.springframework" level="WARN" />
+	<logger name="org.apache.activemq" level="WARN" />
+
+	<root level="ERROR">
 		<appender-ref ref="CONSOLE" />
 	</root>
 
