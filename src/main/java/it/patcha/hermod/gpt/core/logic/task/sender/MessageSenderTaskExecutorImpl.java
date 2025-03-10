@@ -69,7 +69,7 @@ public class MessageSenderTaskExecutorImpl extends BaseTaskExecutor implements M
 			producer.send(message);
 
 			sendBean.setSuccessful(true);
-			logger.info(HermodConstants.MESSAGE_SENT_LOG, requestQueueName);
+			logger.debug(HermodConstants.MESSAGE_SENT_LOG, requestQueueName);
 
 		} catch (Exception e) {
 			throw formatTaskExecutorException(String.format(WM03.getMessage(), requestQueueName), WM03.getCode(), e);

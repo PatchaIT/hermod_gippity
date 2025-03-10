@@ -136,7 +136,7 @@ public abstract class HermodBaseTest extends AssertWrapper {
 	@BeforeEach
 	void setUpBeforeAll() {
 		if (first) {
-			logger.info(LOG_TEST_CLASS, TEST_CLASS, this.getClass().getSimpleName());
+			logger.debug(LOG_TEST_CLASS, TEST_CLASS, this.getClass().getSimpleName());
 			first = false;
 		}
 	}

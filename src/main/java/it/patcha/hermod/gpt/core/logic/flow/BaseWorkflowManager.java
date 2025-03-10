@@ -14,7 +14,7 @@ public abstract class BaseWorkflowManager extends HermodClass implements Workflo
 
 	@Override
 	public HermodBean handleWorkflow(HermodBean workflowInput) throws WorkflowManagerException {
-		logger.info("{} received workflowInput: {}", this.getClass().getSimpleName(), workflowInput);
+		logger.debug("{} received workflowInput: {}", this.getClass().getSimpleName(), workflowInput);
 
 		if (workflowInput == null)
 			throw formatWorkflowManagerException(WM01);

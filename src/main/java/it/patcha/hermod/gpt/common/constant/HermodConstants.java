@@ -86,12 +86,16 @@ public class HermodConstants {
 
 	// Log messages
 	public static final String UNKNOWN_CLASS = "Unknown class";
-	public static final String MAIN_POSITIVE_LOG = "Positively ended.";
-	public static final String MAIN_NEGATIVE_LOG = "Ended with issues, please check logs.";
 	public static final String MESSAGE_SENT_LOG = "Message sent successfully to queue: {}";
 	public static final String OUTCOME_POSITIVE = "Done and done, with args: {}";
 	public static final String OUTCOME_NEGATIVE = "Something went wrong, please check logs, with args: {}";
 	public static final String OUTCOME_ERROR = "{} : {} : {}";
+
+	// Console messages
+	public static final String MAIN_POSITIVE_LOG = "Positively ended.";
+	public static final String MAIN_NEGATIVE_LOG = "Ended with issues, please check logs.";
+	public static final String ERROR_NEGATIVE_LOG = "Error : {}";
+	public static final String ERROR_UNEXPECTED_LOG = "Unexpected error : {}";
 
 	// Enums
 	public static final String INVALID_DATA_TYPE = "Invalid data type: ";

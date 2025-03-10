@@ -14,7 +14,7 @@ public abstract class BaseJobDispatcher extends HermodClass implements JobDispat
 
 	@Override
 	public HermodBean handleJobs(HermodBean dispatcherInput) throws JobDispatcherException {
-		logger.info("{} received dispatcherInput: {}", this.getClass().getSimpleName(), dispatcherInput);
+		logger.debug("{} received dispatcherInput: {}", this.getClass().getSimpleName(), dispatcherInput);
 
 		if (dispatcherInput == null)
 			throw formatJobDispatcherException(JD01);

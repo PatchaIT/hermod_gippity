@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.ERROR_NEGATIVE_LOG;
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.ERROR_UNEXPECTED_LOG;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.OUTCOME_ERROR;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.OUTCOME_NEGATIVE;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.OUTCOME_POSITIVE;
@@ -56,18 +58,20 @@ public class HermodGippity {
 			hermodBean = mainJobDispatcher.handleJobs(argsBean);
 
 			if (hermodBean != null && hermodBean.isSuccessful()) {
-				logger.info(OUTCOME_POSITIVE, argsBean);
+				logger.debug(OUTCOME_POSITIVE, argsBean);
 				return 0;
 			} else {
-				logger.info(OUTCOME_NEGATIVE, argsBean);
+				logger.debug(OUTCOME_NEGATIVE, argsBean);
 				return 1;
 			}
 
 		} catch (JobDispatcherException e) {
-			logger.error(e.getMessage(), e);
+			logger.info(ERROR_NEGATIVE_LOG, e.getMessage());
+			logger.error("", e);
 			return -1;
 
 		} catch (Exception e) {
+			logger.info(ERROR_UNEXPECTED_LOG, e.getMessage());
 			logger.error(OUTCOME_ERROR, RE99.getCode(), RE99.getMessage(), e.getMessage(), e);
 			return -1;
 		}

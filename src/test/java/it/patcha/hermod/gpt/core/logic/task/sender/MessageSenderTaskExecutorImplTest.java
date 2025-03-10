@@ -263,7 +263,7 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 
 				SendBean result = taskExecutor.sendMessage(sendBean);
 				boolean check = checkIntoLogs(
-						HermodConstants.MESSAGE_SENT_LOG.replace("{}", sendBean.getRequestQueueName()), Level.INFO, logAppender);
+						HermodConstants.MESSAGE_SENT_LOG.replace("{}", sendBean.getRequestQueueName()), Level.DEBUG, logAppender);
 				assertTrueToLog(check, getEndTestLogKO());
 
 				swapInfoExpected(EXP_NOT_NULL.toString());

@@ -14,7 +14,7 @@ public abstract class BaseInfoReader extends HermodClass implements InfoReader {
 
 	@Override
 	public HermodBean handleOptions(HermodBean readerInput) throws InfoReaderException {
-		logger.info("{} received readerInput: {}", this.getClass().getSimpleName(), readerInput);
+		logger.debug("{} received readerInput: {}", this.getClass().getSimpleName(), readerInput);
 
 		if (readerInput == null)
 			throw formatInfoReaderException(IR01);
