@@ -207,9 +207,6 @@
 			<properties>
 				<sonar.token>${env.SONAR_TOKEN}</sonar.token>
 				<!-- Ignore rule S1165 for all classes ending with "Exception.java": Exceptions attributes are not final -->
-				<sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
-				<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1165</sonar.issue.ignore.multicriteria.e1.ruleKey>
-				<sonar.issue.ignore.multicriteria.e1.resourceKey>**/*Exception.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 			</properties>
 			<build>
 				<plugins>

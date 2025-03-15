@@ -2,11 +2,9 @@ package it.patcha.hermod.gpt.common.error;
 
 import it.patcha.hermod.gpt.common.HermodBaseTest;
 import it.patcha.hermod.gpt.config.SpringConfig;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,21 +23,13 @@ class HermodExceptionTest extends HermodBaseTest {
 
 	private static final String TO_THROWABLE_STRING = "%s: %s";
 
-	@InjectMocks
-	private HermodException hermodException;
-
-	@BeforeEach
-	void setUp() {
-		hermodException = new HermodException();
-	}
-
 	@Test
-	void testSetGetCode(TestInfo testInfo) throws Exception {
+	void testGetCode(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException.setCode(errorCode);
+			HermodException hermodException = new HermodException(errorMessage, errorCode);
 			String result = hermodException.getCode();
 			assertNotNullToLog(result, getEndTestLogKO());
 
@@ -55,12 +45,12 @@ class HermodExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testSetGetMessage(TestInfo testInfo) throws Exception {
+	void testGetMessage(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException.setMessage(errorMessage);
+			HermodException hermodException = new HermodException(errorMessage);
 			String result = hermodException.getMessage();
 			assertNotNullToLog(result, getEndTestLogKO());
 
@@ -76,12 +66,12 @@ class HermodExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testSetGetCause(TestInfo testInfo) throws Exception {
+	void testGetCause(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException.setCause(errorCause);
+			HermodException hermodException = new HermodException(errorCause);
 			Throwable result = hermodException.getCause();
 			assertNotNullToLog(result, getEndTestLogKO());
 
@@ -541,7 +531,7 @@ class HermodExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException = new HermodException();
+			HermodException hermodException = new HermodException();
 			String toString = String.format(
 					HermodException.MESSAGE_MASK,
 					hermodException.getClass().getName(),
@@ -571,7 +561,7 @@ class HermodExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException = new HermodException(errorType.getMessage());
+			HermodException hermodException = new HermodException(errorType.getMessage());
 			String toString = String.format(
 					HermodException.MESSAGE_MASK,
 					hermodException.getClass().getName(),
@@ -601,7 +591,7 @@ class HermodExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException = new HermodException(errorType);
+			HermodException hermodException = new HermodException(errorType);
 			String toString = String.format(
 					HermodException.MESSAGE_MASK,
 					hermodException.getClass().getName(),
@@ -631,7 +621,7 @@ class HermodExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException = new HermodException(errorType, this.getClass());
+			HermodException hermodException = new HermodException(errorType, this.getClass());
 			String toString = String.format(
 					HermodException.MESSAGE_MASK,
 					hermodException.getClass().getName(),
@@ -661,7 +651,7 @@ class HermodExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException = new HermodException(errorType, this.getClass(), errorThrowable);
+			HermodException hermodException = new HermodException(errorType, this.getClass(), errorThrowable);
 			String toString = String.format(
 					HermodException.MESSAGE_MASK,
 					hermodException.getClass().getName(),
@@ -691,7 +681,7 @@ class HermodExceptionTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
-			hermodException = new HermodException(errorType, this.getClass(), errorThrowable);
+			HermodException hermodException = new HermodException(errorType, this.getClass(), errorThrowable);
 			String toThrwoableString = String.format(TO_THROWABLE_STRING, hermodException.getClass().getName(), hermodException.getMessage());
 
 			String result = hermodException.throwableToString();
