@@ -15,11 +15,15 @@ public class DelegatorException extends HermodException {
 	}
 
 	public <T extends HermodException> DelegatorException(T child) {
-		this(child.getMessage(), child.getCode(), child);
+		super(child);
 	}
 
 	public DelegatorException(String message) {
 		super(message);
+	}
+
+	public DelegatorException(Class<?> source) {
+		super(source);
 	}
 
 	public DelegatorException(String message, Throwable cause) {
@@ -30,16 +34,36 @@ public class DelegatorException extends HermodException {
 		super(message, code);
 	}
 
+	public DelegatorException(String message, Class<?> source) {
+		super(message, source);
+	}
+
 	public DelegatorException(String message, String code, Throwable cause) {
 		super(message, code, cause);
 	}
 
+	public DelegatorException(String message, String code, Class<?> source) {
+		super(message, code, source);
+	}
+
+	public DelegatorException(String message, String code, Class<?> source, Throwable cause) {
+		super(message, code, source, cause);
+	}
+
 	public DelegatorException(ErrorType errorType) {
-		super(errorType.getMessage(), errorType.getCode());
+		super(errorType);
 	}
 
 	public DelegatorException(ErrorType errorType, Throwable cause) {
-		super(errorType.getMessage(), errorType.getCode(), cause);
+		super(errorType, cause);
+	}
+
+	public DelegatorException(ErrorType errorType, Class<?> source) {
+		super(errorType, source);
+	}
+
+	public DelegatorException(ErrorType errorType, Class<?> source, Throwable cause) {
+		super(errorType, source, cause);
 	}
 
 	public DelegatorException(Throwable cause) {

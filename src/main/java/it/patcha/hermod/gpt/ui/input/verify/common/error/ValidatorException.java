@@ -15,11 +15,15 @@ public class ValidatorException extends HermodException {
 	}
 
 	public <T extends HermodException> ValidatorException(T child) {
-		this(child.getMessage(), child.getCode(), child);
+		super(child);
 	}
 
 	public ValidatorException(String message) {
 		super(message);
+	}
+
+	public ValidatorException(Class<?> source) {
+		super(source);
 	}
 
 	public ValidatorException(String message, Throwable cause) {
@@ -30,16 +34,36 @@ public class ValidatorException extends HermodException {
 		super(message, code);
 	}
 
+	public ValidatorException(String message, Class<?> source) {
+		super(message, source);
+	}
+
 	public ValidatorException(String message, String code, Throwable cause) {
 		super(message, code, cause);
 	}
 
+	public ValidatorException(String message, String code, Class<?> source) {
+		super(message, code, source);
+	}
+
+	public ValidatorException(String message, String code, Class<?> source, Throwable cause) {
+		super(message, code, source, cause);
+	}
+
 	public ValidatorException(ErrorType errorType) {
-		super(errorType.getMessage(), errorType.getCode());
+		super(errorType);
 	}
 
 	public ValidatorException(ErrorType errorType, Throwable cause) {
-		super(errorType.getMessage(), errorType.getCode(), cause);
+		super(errorType, cause);
+	}
+
+	public ValidatorException(ErrorType errorType, Class<?> source) {
+		super(errorType, source);
+	}
+
+	public ValidatorException(ErrorType errorType, Class<?> source, Throwable cause) {
+		super(errorType, source, cause);
 	}
 
 	public ValidatorException(Throwable cause) {

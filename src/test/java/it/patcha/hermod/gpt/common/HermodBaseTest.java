@@ -80,6 +80,8 @@ public abstract class HermodBaseTest extends AssertWrapper {
 		// Test common expected results
 		EXP_TRUE(HermodConstants.STR_TRUE),
 		EXP_FALSE(HermodConstants.STR_FALSE),
+		EXP_EQUALS("equals "),
+		EXP_NOT_EQUALS("not equals "),
 		EXP_NOT_NULL("not null"),
 		EXP_NULL("null"),
 		EXP_NOT_EMPTY("not empty"),
@@ -122,7 +124,7 @@ public abstract class HermodBaseTest extends AssertWrapper {
 	protected final ErrorType errorType = TT01;
 	protected final String errorCode = "TT01";
 	protected final String errorMessage = "Error message for test";
-	protected final TestHermodException errorCause = new TestHermodException(errorType, new TestHermodException(errorMessage));
+	protected final TestHermodException errorCause = new TestHermodException(errorType, this.getClass(), new TestHermodException(errorMessage));
 	protected final Exception errorThrowable = new RuntimeException(errorMessage, new RuntimeException(errorMessage));
 
 	// Test attributes
@@ -319,8 +321,8 @@ public abstract class HermodBaseTest extends AssertWrapper {
 		private static final long serialVersionUID = 7295198888273346093L;
 		public TestHermodException() {}
 		public TestHermodException(String message) {super(message);}
-		public TestHermodException(ErrorType errorType, Throwable cause) {
-			super(errorType.getMessage(), errorType.getCode(), cause);
+		public TestHermodException(ErrorType errorType, Class<?> source, Throwable cause) {
+			super(errorType.getMessage(), errorType.getCode(), source, cause);
 		}
 	}
 

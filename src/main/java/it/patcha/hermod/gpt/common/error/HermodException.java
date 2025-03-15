@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.UNKNOWN_CLASS;
+
 /**
  * Base application Exception.
  * <p/>
@@ -26,8 +28,11 @@ public class HermodException extends Exception {
 	@Serial
 	private static final long serialVersionUID = 8300442580806755165L;
 
+	public static final String MESSAGE_MASK = "%s [%s%s]%s : %s";
+
 	private String message;
 	private String code;
+	private Class<?> source;
 	@Getter(onMethod = @__(@Synchronized))
 	@Setter(onMethod = @__(@Synchronized))
 	private Throwable cause;
@@ -36,12 +41,17 @@ public class HermodException extends Exception {
 	}
 
 	public <T extends HermodException> HermodException(T child) {
-		this(child.getMessage(), child.getCode(), child);
+		this(child.getMessage(), child.getCode(), child.getSource(), child);
 	}
 
 	public HermodException(String message) {
 		super(message);
 		this.message = message;
+	}
+
+	public HermodException(Class<?> source) {
+		super();
+		this.source = source;
 	}
 
 	public HermodException(String message, Throwable cause) {
@@ -56,11 +66,32 @@ public class HermodException extends Exception {
 		this.code = code;
 	}
 
+	public HermodException(String message, Class<?> source) {
+		super(message);
+		this.message = message;
+		this.source = source;
+	}
+
 	public HermodException(String message, String code, Throwable cause) {
 		super(message, cause);
 		this.message = message;
 		this.code = code;
 		this.cause = cause;
+	}
+
+	public HermodException(String message, String code, Class<?> source) {
+		super(message);
+		this.message = message;
+		this.code = code;
+		this.source = source;
+	}
+
+	public HermodException(String message, String code, Class<?> source, Throwable cause) {
+		super(message, cause);
+		this.message = message;
+		this.code = code;
+		this.cause = cause;
+		this.source = source;
 	}
 
 	public HermodException(ErrorType errorType) {
@@ -76,6 +107,21 @@ public class HermodException extends Exception {
 		this.cause = cause;
 	}
 
+	public HermodException(ErrorType errorType, Class<?> source) {
+		super(errorType.getMessage());
+		this.message = errorType.getMessage();
+		this.code = errorType.getCode();
+		this.source = source;
+	}
+
+	public HermodException(ErrorType errorType, Class<?> source, Throwable cause) {
+		super(errorType.getMessage(), cause);
+		this.message = errorType.getMessage();
+		this.code = errorType.getCode();
+		this.source = source;
+		this.cause = cause;
+	}
+
 	public HermodException(Throwable cause) {
 		super(cause);
 		this.cause = cause;
@@ -83,7 +129,12 @@ public class HermodException extends Exception {
 
 	@Override
 	public String toString() {
-		return getClass().getName() + ": " + (StringUtils.isEmpty(this.code) ? this.code + ": " + this.message : this.message);
+		return String.format(MESSAGE_MASK,
+				this.getClass().getName(),
+				source != null ? source.getSimpleName() : UNKNOWN_CLASS,
+				cause != null ? " - " + cause.getClass().getSimpleName() : "",
+				code != null ? " " + code : "",
+				message);
 	}
 
 	public String throwableToString() {

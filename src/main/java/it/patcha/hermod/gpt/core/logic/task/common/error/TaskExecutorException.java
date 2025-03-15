@@ -15,11 +15,15 @@ public class TaskExecutorException extends HermodException {
 	}
 
 	public <T extends HermodException> TaskExecutorException(T child) {
-		this(child.getMessage(), child.getCode(), child);
+		super(child);
 	}
 
 	public TaskExecutorException(String message) {
 		super(message);
+	}
+
+	public TaskExecutorException(Class<?> source) {
+		super(source);
 	}
 
 	public TaskExecutorException(String message, Throwable cause) {
@@ -30,16 +34,36 @@ public class TaskExecutorException extends HermodException {
 		super(message, code);
 	}
 
+	public TaskExecutorException(String message, Class<?> source) {
+		super(message, source);
+	}
+
 	public TaskExecutorException(String message, String code, Throwable cause) {
 		super(message, code, cause);
 	}
 
+	public TaskExecutorException(String message, String code, Class<?> source) {
+		super(message, code, source);
+	}
+
+	public TaskExecutorException(String message, String code, Class<?> source, Throwable cause) {
+		super(message, code, source, cause);
+	}
+
 	public TaskExecutorException(ErrorType errorType) {
-		super(errorType.getMessage(), errorType.getCode());
+		super(errorType);
 	}
 
 	public TaskExecutorException(ErrorType errorType, Throwable cause) {
-		super(errorType.getMessage(), errorType.getCode(), cause);
+		super(errorType, cause);
+	}
+
+	public TaskExecutorException(ErrorType errorType, Class<?> source) {
+		super(errorType, source);
+	}
+
+	public TaskExecutorException(ErrorType errorType, Class<?> source, Throwable cause) {
+		super(errorType, source, cause);
 	}
 
 	public TaskExecutorException(Throwable cause) {

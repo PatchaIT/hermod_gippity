@@ -20,7 +20,7 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO
 class WorkflowManagerExceptionTest extends HermodBaseTest {
 
 	@Test
-	void testConstructorEmpty(TestInfo testInfo) throws Exception {
+	void testConstructor_Empty(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
@@ -28,6 +28,7 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 			WorkflowManagerException result = new WorkflowManagerException();
 			assertNullToLog(result.getCode(), getEndTestLogKO());
 			assertNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNullToLog(result.getSource(), getEndTestLogKO());
 			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
@@ -40,7 +41,7 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorChild(TestInfo testInfo) throws Exception {
+	void testConstructor_WithChild(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
@@ -48,6 +49,7 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 			WorkflowManagerException result = new WorkflowManagerException(errorCause);
 			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
 			assertNotNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(errorCode);
@@ -55,6 +57,9 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 
 			swapInfoExpected(errorMessage);
 			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
 
 			swapInfoExpected(errorCause.toString());
 			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
@@ -69,13 +74,14 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorMessage(TestInfo testInfo) throws Exception {
+	void testConstructor_WithMessage(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			WorkflowManagerException result = new WorkflowManagerException(errorMessage);
 			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getSource(), getEndTestLogKO());
 			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
@@ -94,12 +100,39 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorMessageCause(TestInfo testInfo) throws Exception {
+	void testConstructor_WithSource(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			WorkflowManagerException result = new WorkflowManagerException(this.getClass());
+			assertNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testConstructor_WithMessageCause(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			WorkflowManagerException result = new WorkflowManagerException(errorMessage, errorCause);
+			assertNullToLog(result.getSource(), getEndTestLogKO());
 			assertNullToLog(result.getCode(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
@@ -122,12 +155,13 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorMessageCode(TestInfo testInfo) throws Exception {
+	void testConstructor_WithMessageCode(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			WorkflowManagerException result = new WorkflowManagerException(errorMessage, errorCode);
+			assertNullToLog(result.getSource(), getEndTestLogKO());
 			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
@@ -150,12 +184,44 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorMessageCodeCause(TestInfo testInfo) throws Exception {
+	void testConstructor_WithMessageSource(TestInfo testInfo) throws Exception {
 		try {
-			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			enrichTestInfo(testInfo, EXP_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			WorkflowManagerException result = new WorkflowManagerException(errorMessage, this.getClass());
+			assertNullToLog(result.getCode(), getEndTestLogKO());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
+
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testConstructor_WithMessageCodeCause(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			WorkflowManagerException result = new WorkflowManagerException(errorMessage, errorCode, errorCause);
+			assertNullToLog(result.getSource(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
 			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
 			assertNotNullToLog(result.getCause(), getEndTestLogKO());
@@ -179,12 +245,78 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorErrorType(TestInfo testInfo) throws Exception {
+	void testConstructor_WithMessageCodeSource(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			WorkflowManagerException result = new WorkflowManagerException(errorMessage, errorCode, this.getClass());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testConstructor_Full(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			WorkflowManagerException result = new WorkflowManagerException(errorMessage, errorCode, this.getClass(), errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testConstructor_WithErrorType(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			WorkflowManagerException result = new WorkflowManagerException(errorType);
+			assertNullToLog(result.getSource(), getEndTestLogKO());
 			assertNullToLog(result.getCause(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
@@ -207,12 +339,15 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorErrorTypeCause(TestInfo testInfo) throws Exception {
+	void testConstructor_WithErrorTypeCause(TestInfo testInfo) throws Exception {
 		try {
-			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
 
 			WorkflowManagerException result = new WorkflowManagerException(errorType, errorCause);
+			assertNullToLog(result.getSource(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
 			assertNotNullToLog(result.getCode(), getEndTestLogKO());
 			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
 			assertNotNullToLog(result.getCause(), getEndTestLogKO());
@@ -236,7 +371,72 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testConstructorCause(TestInfo testInfo) throws Exception {
+	void testConstructor_WithErrorTypeSource(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			WorkflowManagerException result = new WorkflowManagerException(errorType, this.getClass());
+			assertNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(EXP_NOT_NULL.toString());
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testConstructor_WithErrorTypeSourceCause(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			WorkflowManagerException result = new WorkflowManagerException(errorType, this.getClass(), errorCause);
+			assertNotNullToLog(result.getCode(), getEndTestLogKO());
+			assertNotNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNotNullToLog(result.getSource(), getEndTestLogKO());
+			assertNotNullToLog(result.getCause(), getEndTestLogKO());
+
+			swapInfoExpected(errorCode);
+			assertEqualsToLog(errorCode, result.getCode(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(errorMessage);
+			assertEqualsToLog(errorMessage, result.getMessage(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(getSimpleName(this));
+			assertEqualsToLog(this.getClass(), result.getSource(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(errorCause.toString());
+			assertEqualsToLog(errorCause, result.getCause(), getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(EXP_EXCEPTION + LOG_NL + WorkflowManagerException.class.getName());
+			logger.debug("{}{}{}", getEndTestLogOK(), LOG_NL, result.toString());
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testConstructor_WithCause(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NULL.toString());
 			logger.debug(getStartTestLog());
@@ -244,6 +444,7 @@ class WorkflowManagerExceptionTest extends HermodBaseTest {
 			WorkflowManagerException result = new WorkflowManagerException(errorThrowable);
 			assertNullToLog(result.getCode(), getEndTestLogKO());
 			assertNullToLog(result.getMessage(), getEndTestLogKO());
+			assertNullToLog(result.getSource(), getEndTestLogKO());
 
 			swapInfoExpected(EXP_NOT_NULL.toString());
 			assertNotNullToLog(result.getCause(), getEndTestLogKO());

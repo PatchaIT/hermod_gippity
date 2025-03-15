@@ -15,11 +15,15 @@ public class InfoReaderException extends HermodException {
 	}
 
 	public <T extends HermodException> InfoReaderException(T child) {
-		this(child.getMessage(), child.getCode(), child);
+		super(child);
 	}
 
 	public InfoReaderException(String message) {
 		super(message);
+	}
+
+	public InfoReaderException(Class<?> source) {
+		super(source);
 	}
 
 	public InfoReaderException(String message, Throwable cause) {
@@ -30,16 +34,36 @@ public class InfoReaderException extends HermodException {
 		super(message, code);
 	}
 
+	public InfoReaderException(String message, Class<?> source) {
+		super(message, source);
+	}
+
 	public InfoReaderException(String message, String code, Throwable cause) {
 		super(message, code, cause);
 	}
 
+	public InfoReaderException(String message, String code, Class<?> source) {
+		super(message, code, source);
+	}
+
+	public InfoReaderException(String message, String code, Class<?> source, Throwable cause) {
+		super(message, code, source, cause);
+	}
+
 	public InfoReaderException(ErrorType errorType) {
-		super(errorType.getMessage(), errorType.getCode());
+		super(errorType);
 	}
 
 	public InfoReaderException(ErrorType errorType, Throwable cause) {
-		super(errorType.getMessage(), errorType.getCode(), cause);
+		super(errorType, cause);
+	}
+
+	public InfoReaderException(ErrorType errorType, Class<?> source) {
+		super(errorType, source);
+	}
+
+	public InfoReaderException(ErrorType errorType, Class<?> source, Throwable cause) {
+		super(errorType, source, cause);
 	}
 
 	public InfoReaderException(Throwable cause) {

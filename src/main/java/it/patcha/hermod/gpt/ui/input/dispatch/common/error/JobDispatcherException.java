@@ -15,11 +15,15 @@ public class JobDispatcherException extends HermodException {
 	}
 
 	public <T extends HermodException> JobDispatcherException(T child) {
-		this(child.getMessage(), child.getCode(), child);
+		super(child);
 	}
 
 	public JobDispatcherException(String message) {
 		super(message);
+	}
+
+	public JobDispatcherException(Class<?> source) {
+		super(source);
 	}
 
 	public JobDispatcherException(String message, Throwable cause) {
@@ -30,16 +34,36 @@ public class JobDispatcherException extends HermodException {
 		super(message, code);
 	}
 
+	public JobDispatcherException(String message, Class<?> source) {
+		super(message, source);
+	}
+
 	public JobDispatcherException(String message, String code, Throwable cause) {
 		super(message, code, cause);
 	}
 
+	public JobDispatcherException(String message, String code, Class<?> source) {
+		super(message, code, source);
+	}
+
+	public JobDispatcherException(String message, String code, Class<?> source, Throwable cause) {
+		super(message, code, source, cause);
+	}
+
 	public JobDispatcherException(ErrorType errorType) {
-		super(errorType.getMessage(), errorType.getCode());
+		super(errorType);
 	}
 
 	public JobDispatcherException(ErrorType errorType, Throwable cause) {
-		super(errorType.getMessage(), errorType.getCode(), cause);
+		super(errorType, cause);
+	}
+
+	public JobDispatcherException(ErrorType errorType, Class<?> source) {
+		super(errorType, source);
+	}
+
+	public JobDispatcherException(ErrorType errorType, Class<?> source, Throwable cause) {
+		super(errorType, source, cause);
 	}
 
 	public JobDispatcherException(Throwable cause) {
