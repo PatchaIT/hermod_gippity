@@ -3,7 +3,7 @@ package it.patcha.hermod.gpt.core.logic.task.sender;
 import it.patcha.hermod.gpt.common.bean.HermodBean;
 import it.patcha.hermod.gpt.common.bean.core.logic.SendBean;
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
-import it.patcha.hermod.gpt.common.error.UnformattedHermodException;
+import it.patcha.hermod.gpt.common.error.HermodException;
 import it.patcha.hermod.gpt.common.util.HermodUtils;
 import it.patcha.hermod.gpt.core.logic.task.BaseTaskExecutor;
 import it.patcha.hermod.gpt.core.logic.task.common.error.TaskExecutorException;
@@ -31,10 +31,10 @@ public class MessageSenderTaskExecutorImpl extends BaseTaskExecutor implements M
 			return sendbean;
 
 		else
-			throw formatTaskExecutorException(
+			throw new TaskExecutorException(
 					String.format(
 							WM02.getMessage(), getSimpleName(SendBean.class), getSimpleName(hermodBean)),
-					WM02.getCode());
+					WM02.getCode(), this.getClass());
 	}
 
 	@Override
@@ -44,9 +44,9 @@ public class MessageSenderTaskExecutorImpl extends BaseTaskExecutor implements M
 			try {
 				sendBean.setMessageText(HermodUtils.readFile(sendBean.getMessageFile()));
 
-			} catch (UnformattedHermodException e) {
+			} catch (HermodException e) {
 				if (StringUtils.isEmpty(sendBean.getMessageText()))
-					throw includeAndFormatIntoTaskExecutorException(e);
+					throw new TaskExecutorException(e);
 			}
 		}
 
@@ -72,7 +72,7 @@ public class MessageSenderTaskExecutorImpl extends BaseTaskExecutor implements M
 			logger.debug(HermodConstants.MESSAGE_SENT_LOG, requestQueueName);
 
 		} catch (Exception e) {
-			throw formatTaskExecutorException(String.format(WM03.getMessage(), requestQueueName), WM03.getCode(), e);
+			throw new TaskExecutorException(String.format(WM03.getMessage(), requestQueueName), WM03.getCode(), this.getClass(), e);
 		}
 
 		return sendBean;

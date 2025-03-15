@@ -26,10 +26,10 @@ public class MainDelegatorImpl extends BaseDelegator implements MainDelegator {
 			return argsbean;
 
 		else
-			throw formatDelegatorException(
+			throw new DelegatorException(
 					String.format(
 							JD02.getMessage(), getSimpleName(ArgsBean.class), getSimpleName(hermodBean)),
-					JD02.getCode());
+					JD02.getCode(), this.getClass());
 	}
 
 	@Override

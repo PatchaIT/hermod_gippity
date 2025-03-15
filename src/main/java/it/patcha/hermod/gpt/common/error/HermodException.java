@@ -4,7 +4,6 @@ import it.patcha.hermod.gpt.common.error.codes.ErrorType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 

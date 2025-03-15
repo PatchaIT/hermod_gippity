@@ -8,7 +8,7 @@ import it.patcha.hermod.gpt.common.HermodBaseTest;
 import it.patcha.hermod.gpt.common.bean.core.logic.SendBean;
 import it.patcha.hermod.gpt.common.bean.ui.input.ArgsBean;
 import it.patcha.hermod.gpt.common.constant.HermodConstants;
-import it.patcha.hermod.gpt.common.error.UnformattedHermodException;
+import it.patcha.hermod.gpt.common.error.HermodException;
 import it.patcha.hermod.gpt.common.util.HermodUtils;
 import it.patcha.hermod.gpt.config.SpringConfig;
 import it.patcha.hermod.gpt.core.logic.task.common.error.TaskExecutorException;
@@ -38,9 +38,6 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NUL
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.TT01;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mockStatic;
@@ -196,9 +193,9 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 
 			sendBean.setMessageFile(objJmsMessageFile);
 			sendBean.setMessageText(valJmsMessageText);
-			UnformattedHermodException unformattedHermodException = new UnformattedHermodException(TT01);
+			HermodException hermodException = new HermodException(TT01);
 			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
-				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenThrow(unformattedHermodException);
+				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenThrow(hermodException);
 
 				SendBean result = taskExecutor.readFile(sendBean);
 				assertNotNullToLog(result, getEndTestLogKO());
@@ -222,11 +219,9 @@ class MessageSenderTaskExecutorImplTest extends HermodBaseTest {
 			logger.debug(getStartTestLog());
 
 			sendBean.setMessageFile(objJmsMessageFile);
-			UnformattedHermodException unformattedHermodException = new UnformattedHermodException(TT01);
+			HermodException hermodException = new HermodException(TT01);
 			try (MockedStatic<HermodUtils> hermodUtils = mockStatic(HermodUtils.class)) {
-				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenThrow(unformattedHermodException);
-				hermodUtils.when(() -> HermodUtils.formatIntoHermodException(eq(unformattedHermodException), eq(TaskExecutorException.class), any(), isNull()))
-						.thenReturn(new TaskExecutorException(TT01, unformattedHermodException));
+				hermodUtils.when(() -> HermodUtils.readFile(objJmsMessageFile)).thenThrow(hermodException);
 
 				TaskExecutorException exception =
 						assertThrowsToLog(TaskExecutorException.class, () -> taskExecutor.readFile(sendBean), getEndTestLogKO());

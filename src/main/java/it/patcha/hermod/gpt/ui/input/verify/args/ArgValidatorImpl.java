@@ -25,10 +25,10 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 			return argsBean;
 
 		else
-			throw formatValidatorException(
+			throw new ValidatorException(
 					String.format(
 							IR02.getMessage(), getSimpleName(ArgsBean.class), getSimpleName(hermodBean)),
-					IR02.getCode());
+					IR02.getCode(), this.getClass());
 	}
 
 	@Override
@@ -68,15 +68,17 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 						messageFilePath = value;
 						yield false;
 					}
-					default -> throw includeAndFormatIntoValidatorException(
-							new IllegalArgumentException(
-									String.format(IR03.getMessage(), args[i])), IR03.getCode());
+					default -> {
+						String message = String.format(IR03.getMessage(), args[i]);
+						throw new ValidatorException(message, IR03.getCode(), this.getClass(),
+								new IllegalArgumentException(message));
+					}
 				};
 
 			} catch (IllegalArgumentException e) {
-				throw includeAndFormatIntoValidatorException(
-						new IllegalArgumentException(
-								String.format(e.getMessage(), args[i])), IR99.getCode());
+				String message = String.format(e.getMessage(), args[i]);
+				throw new ValidatorException(message, IR99.getCode(), this.getClass(),
+						new IllegalArgumentException(message));
 			}
 
 			if (isValued) {
@@ -86,19 +88,19 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 					i += 2;
 
 				} else {
-					throw includeAndFormatIntoValidatorException(
-							new IllegalArgumentException(
-									String.format(IR04.getMessage(), args[i])), IR04.getCode());
+					String message = String.format(IR04.getMessage(), args[i]);
+					throw new ValidatorException(message, IR04.getCode(), this.getClass(),
+							new IllegalArgumentException(message));
 				}
 			}
 
 		}
 
 		if (gui)
-			throw formatValidatorException(UI02);
+			throw new ValidatorException(UI02, this.getClass());
 
 		if (connectionFactoryUrl == null || requestQueueName == null || messageText == null)
-			throw formatValidatorException(UI01);
+			throw new ValidatorException(UI01, this.getClass());
 
 		argsBean.setConnectionFactoryUrl(connectionFactoryUrl);
 		argsBean.setRequestQueueName(requestQueueName);

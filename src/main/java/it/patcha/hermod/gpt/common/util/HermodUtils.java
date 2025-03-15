@@ -1,7 +1,6 @@
 package it.patcha.hermod.gpt.common.util;
 
 import it.patcha.hermod.gpt.common.error.HermodException;
-import it.patcha.hermod.gpt.common.error.UnformattedHermodException;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static it.patcha.hermod.gpt.common.constant.HermodConstants.UNKNOWN_CLASS;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IO01;
 
 /** This class keeps application static utility methods with a general scope. */
@@ -76,199 +74,6 @@ public class HermodUtils {
 	}
 
 	/**
-	 * Applies the application's standard formatting
-	 *   for error messages to an application exceptions.
-	 *
-	 * @param exception the exception for which the error message must be formatted
-	 * @param clazz the class in which the exception is being generated
-	 * @param message the exception message to format
-	 * @param code the exception code
-	 * @param cause the exception for which this exception is being generated, if any
-	 * @return the wanted exception with formatted message
-	 * @param <T> an application exception extending {@link HermodException}
-	 */
-	public static <T extends HermodException> T formatHermodException(
-			T exception, Class<?> clazz, String message, String code, Throwable cause) {
-
-		if (exception == null)
-			return null;
-
-		if (!StringUtils.isEmpty(message))
-			message = String.format("[%s%s]%s : %s",
-					clazz != null ? getSimpleName(clazz) : UNKNOWN_CLASS,
-					cause != null ? " - " + getSimpleName(cause) : "",
-					code != null ? " " + code : "",
-					message);
-
-		exception.setMessage(message);
-		exception.setCode(code);
-		exception.setCause(cause);
-
-		return exception;
-	}
-
-	/**
-	 * Returns an application Exception of the desired type,
-	 *   by recycling data from the another Exception which will
-	 *   also be used as {@code cause} for the new one.
-	 * <p/>
-	 * The message of Exception will be formatted based on the
-	 *   application's standard format for error messages.
-	 *
-	 * @param oldException the source Exception from which we'll
-	 *   recycle exception data and which will be used as cause
-	 *   for the new one
-	 * @param newExceptionClass the class for the Exception to be
-	 *   returned
-	 * @param clazz the class in which the exception is being generated
-	 * @param code the exception code: if {@code null} the {@code code}
-	 *   from the source Exception will be used, if any
-	 * @return a new Exception of the desired type, with the same data
-	 *   of the provided Exception, apart from the {@code cause}
-	 *   which will be the source Exception itself, and the message
-	 *   will receive the standard application's formatting
-	 * @param <T> the class of the application Exception wanted as response
-	 * @throws HermodException if unable to instantiate the wanted Exception type.
-	 *   Note that the returned {@link HermodException} will contain the
-	 *     data the wanted Exception should've contained.
-	 *   Which means the same as original source Exception plus the message
-	 *     formatting and the source Exception set as cause.
-	 *   So that you can use this {@link HermodException} as replacement
-	 *     of the wanted one.
-	 */
-	public static <T extends HermodException> T formatIntoHermodException(
-			Exception oldException, Class<T> newExceptionClass, Class<?> clazz, String code) throws HermodException {
-		return intoHermodException(oldException, newExceptionClass, clazz, code, true);
-	}
-
-	/**
-	 * Returns an application Exception of the desired type,
-	 *   by recycling data from the another Exception which will
-	 *   also be used as {@code cause} for the new one.
-	 * <p/>
-	 * The message of Exception will be formatted based on the
-	 *   application's standard format for error messages.
-	 *
-	 * @param oldException the source Exception from which we'll
-	 *   recycle exception data and which will be used as cause
-	 *   for the new one
-	 * @param newExceptionClass the class for the Exception to be
-	 *   returned
-	 * @param clazz the class in which the exception is being generated
-	 * @return a new Exception of the desired type, with the same data
-	 *   of the provided Exception, apart from the {@code cause}
-	 *   which will be the source Exception itself, and the message
-	 *   will receive the standard application's formatting
-	 * @param <T> the class of the application Exception wanted as response
-	 * @throws HermodException if unable to instantiate the wanted Exception type.
-	 *   Note that the returned {@link HermodException} will contain the
-	 *     data the wanted Exception should've contained.
-	 *   Which means the same as original source Exception plus the message
-	 *     formatting and the source Exception set as cause.
-	 *   So that you can use this {@link HermodException} as replacement
-	 *     of the wanted one.
-	 */
-	public static <T extends HermodException> T formatIntoHermodException(
-			Exception oldException, Class<T> newExceptionClass, Class<?> clazz) throws HermodException {
-		return formatIntoHermodException(oldException, newExceptionClass, clazz, null);
-	}
-
-	/**
-	 * Returns an application Exception of the desired type,
-	 *   by recycling data from the another Exception which will
-	 *   also be used as {@code cause} for the new one.
-	 * <p/>
-	 * The message of Exception will be untouched and
-	 *   will not receive any further formatting.
-	 *
-	 * @param oldException the source Exception from which we'll
-	 *   recycle exception data and which will be used as cause
-	 *   for the new one
-	 * @param newExceptionClass the class for the Exception to be
-	 *   returned
-	 * @param code the exception code: if {@code null} the {@code code}
-	 *   from the source Exception will be used, if any
-	 * @return a new Exception of the desired type, with the same data
-	 *   of the provided Exception, apart from the {@code cause}
-	 *   which will be the source Exception itself
-	 * @param <T> the class of the application Exception wanted as response
-	 * @throws HermodException if unable to instantiate the wanted Exception type.
-	 *   Note that the returned {@link HermodException} will contain the
-	 *     data the wanted Exception should've contained.
-	 *   Which means the same as original source Exception plus the
-	 *     source Exception set as cause.
-	 *   So that you can use this {@link HermodException} as replacement
-	 *     of the wanted one.
-	 */
-	public static <T extends HermodException> T includeIntoHermodException(
-			Exception oldException, Class<T> newExceptionClass, String code) throws HermodException {
-		return intoHermodException(oldException, newExceptionClass, null, code, false);
-	}
-
-	/**
-	 * Returns an application Exception of the desired type,
-	 *   by recycling data from the another Exception which will
-	 *   also be used as {@code cause} for the new one.
-	 * <p/>
-	 * The message of Exception will be untouched and
-	 *   will not receive any further formatting.
-	 *
-	 * @param oldException the source Exception from which we'll
-	 *   recycle exception data and which will be used as cause
-	 *   for the new one
-	 * @param newExceptionClass the class for the Exception to be
-	 *   returned
-	 *   from the source Exception will be used, if any
-	 * @return a new Exception of the desired type, with the same data
-	 *   of the provided Exception, apart from the {@code cause}
-	 *   which will be the source Exception itself
-	 * @param <T> the class of the application Exception wanted as response
-	 * @throws HermodException if unable to instantiate the wanted Exception type.
-	 *   Note that the returned {@link HermodException} will contain the
-	 *     data the wanted Exception should've contained.
-	 *   Which means the same as original source Exception plus the
-	 *     source Exception set as cause.
-	 *   So that you can use this {@link HermodException} as replacement
-	 *     of the wanted one.
-	 */
-	public static <T extends HermodException> T includeIntoHermodException(
-			Exception oldException, Class<T> newExceptionClass) throws HermodException {
-		return includeIntoHermodException(oldException, newExceptionClass, null);
-	}
-
-	/** Here there's core logic for some methods above, please refer to their javadoc. */
-	private static <T extends HermodException> T intoHermodException(
-			Exception oldException, Class<T> newExceptionClass, Class<?> clazz, String code, boolean format) throws HermodException {
-
-		if (newExceptionClass == null)
-			return null;
-
-		String message = oldException.getMessage();
-		if (code == null)
-			code = oldException instanceof HermodException hermodexception ? hermodexception.getCode() : null;
-
-		try {
-			if (format)
-				return formatHermodException(
-						newExceptionClass.getConstructor().newInstance(),
-						clazz, message, code, oldException);
-			else {
-				T newException = newExceptionClass.getConstructor().newInstance();
-				newException.setMessage(message);
-				newException.setCode(code);
-				newException.setCause(oldException);
-				return newException;
-			}
-
-		} catch (ReflectiveOperationException e) {
-			if (format)
-				throw formatHermodException(new HermodException(), clazz, message, code, oldException);
-			else
-				throw new HermodException(message, code, oldException);
-		}
-	}
-
-	/**
 	 * Returns the simple name of a class (or class of an instance),
 	 *   without the need to use {@code MyClass.class.getSimpleName()}
 	 *   or {@code myClass.getClass().getSimpleName()}.
@@ -307,9 +112,9 @@ public class HermodUtils {
 	 *
 	 * @param filePath the path where the file to open is located
 	 * @return the file content as {@code String}
-	 * @throws UnformattedHermodException if something goes wrong
+	 * @throws HermodException if something goes wrong
 	 */
-	public static String readFile(String filePath) throws UnformattedHermodException {
+	public static String readFile(String filePath) throws HermodException {
 		return readFile(new File(filePath));
 	}
 
@@ -319,9 +124,9 @@ public class HermodUtils {
 	 * @param file the File object made from the path where
 	 *   the file to open is located
 	 * @return the file content as {@code String}
-	 * @throws UnformattedHermodException if something goes wrong
+	 * @throws HermodException if something goes wrong
 	 */
-	public static String readFile(File file) throws UnformattedHermodException {
+	public static String readFile(File file) throws HermodException {
 		if (file == null || StringUtils.isEmpty(file.getPath()))
 			return null;
 
@@ -329,7 +134,7 @@ public class HermodUtils {
 			return new String(Files.readAllBytes(file.toPath()));
 
 		} catch (IOException e) {
-			throw new UnformattedHermodException(
+			throw new HermodException(
 					String.format(IO01.getMessage(), file.getPath()), IO01.getCode(), e);
 		}
 	}
