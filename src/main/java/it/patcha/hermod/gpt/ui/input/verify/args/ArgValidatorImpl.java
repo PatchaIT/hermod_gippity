@@ -19,6 +19,8 @@ import static it.patcha.hermod.gpt.common.error.codes.ErrorType.UI02;
 @Component
 public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 
+	private record ParsedMessage(String messageText, int argsRead) {}
+
 	@Override
 	public ArgsBean castToArgsBean(HermodBean hermodBean) throws ValidatorException {
 		if (hermodBean instanceof ArgsBean argsBean)
@@ -41,32 +43,33 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 		boolean gui = false;
 
 		int i = 0;
-		boolean isValued;
+		int argsRead;
 		while (i < args.length) {
 			String arg = args[i];
 			String value = (i + 1 < args.length) ? args[i + 1] : null;
 
 			try {
-				isValued = switch (fromString(arg)) {
+				argsRead = switch (fromString(arg)) {
 					case GUI -> {
 						gui = true;
-						yield true;
+						yield 1;
 					}
 					case CONNECTION_FACTORY_URL -> {
 						connectionFactoryUrl = value;
-						yield false;
+						yield 2;
 					}
 					case REQUEST_QUEUE_NAME -> {
 						requestQueueName = value;
-						yield false;
+						yield 2;
 					}
 					case JMS_MESSAGE_TEXT -> {
-						messageText = value;
-						yield false;
+						ParsedMessage parsed = textMessageParser(args, i, value);
+						messageText = parsed.messageText();
+						yield parsed.argsRead();
 					}
 					case JMS_MESSAGE_FILE_PATH -> {
 						messageFilePath = value;
-						yield false;
+						yield 2;
 					}
 					default -> {
 						String message = String.format(IR03.getMessage(), args[i]);
@@ -81,19 +84,13 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 						new IllegalArgumentException(message));
 			}
 
-			if (isValued) {
-				i++;
-			} else {
-				if (value != null) {
-					i += 2;
-
-				} else {
-					String message = String.format(IR04.getMessage(), args[i]);
-					throw new ValidatorException(message, IR04.getCode(), this.getClass(),
-							new IllegalArgumentException(message));
-				}
+			if (argsRead > 1 && value == null) {
+				String message = String.format(IR04.getMessage(), args[i]);
+				throw new ValidatorException(message, IR04.getCode(), this.getClass(),
+						new IllegalArgumentException(message));
 			}
 
+			i += argsRead;
 		}
 
 		if (gui)
@@ -109,6 +106,30 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 		argsBean.setSuccessful(true);
 
 		return argsBean;
+	}
+
+	private ParsedMessage textMessageParser(String[] args, int i, String value) {
+		String messageText;
+		int argsRead;
+
+		if (value == null) {
+			messageText = null;
+			argsRead = 2;
+
+		} else {
+			StringBuilder textBuilder = new StringBuilder();
+			int j = i + 1;
+
+			while (j < args.length && !args[j].startsWith("-")) {
+				textBuilder.append(args[j]).append(" ");
+				j++;
+			}
+
+			messageText = textBuilder.toString().trim();
+			argsRead = j - i;
+		}
+
+		return new ParsedMessage(messageText, argsRead);
 	}
 
 }

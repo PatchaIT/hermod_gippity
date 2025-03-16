@@ -15,7 +15,7 @@ public enum ErrorType {
 
 	/** Main Usage Message: Output text which explains command line format */
 	UI01("UI", 1,
-			"Usage: java -jar hermod-gippity.jar -connF <Connection Factory URL> -requestQ <Request Queue Name> [-text <Text Here> | -file <File Path>]"),
+			"Usage: java -jar hermod-gippity.jar -connF <Connection Factory URL> -requestQ <Request Queue Name> [-text <Message Text> | -file <Message File Path>]"),
 	/** Main Usage Message: Sorry, the Graphical User Interface has not been implemented yet */
 	UI02("UI", 2,
 			"GUI: Sorry, the Graphical User Interface has not been implemented yet."),

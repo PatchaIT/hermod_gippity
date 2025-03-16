@@ -18,6 +18,8 @@ import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_CONTAIN
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_EXCEPTION;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
+import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
+import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.INVALID_DATA_TYPE;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR03;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR04;
@@ -41,7 +43,7 @@ class ArgValidatorImplTest extends HermodBaseTest {
 		args = new String[]{
 				argConnectionFactoryUrl, valConnectionFactoryUrl,
 				argRequestQueueName, valRequestQueueName,
-				argJmsMessageText, valJmsMessageText,
+				argJmsMessageText, valJmsMessageText1, valJmsMessageText2,
 				argJmsMessageFilePath, valJmsMessageFilePath
 		};
 
@@ -88,6 +90,7 @@ class ArgValidatorImplTest extends HermodBaseTest {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
 
+			// Test with -text option as second last option
 			ArgsBean result = validator.validateArgs(argsBean);
 			assertNotNullToLog(result, getEndTestLogKO());
 
@@ -103,6 +106,31 @@ class ArgValidatorImplTest extends HermodBaseTest {
 			assertTrueToLog(result.isSuccessful(), getEndTestLogKO());
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
+
+			// Test with -text option as last option
+			args = new String[]{
+					argConnectionFactoryUrl, valConnectionFactoryUrl,
+					argRequestQueueName, valRequestQueueName,
+					argJmsMessageFilePath, valJmsMessageFilePath,
+					argJmsMessageText, valJmsMessageText1, valJmsMessageText2
+			};
+			argsBean.setArgs(args);
+
+			result = validator.validateArgs(argsBean);
+			assertNotNullToLog(result, getEndTestLog(TEST_AND_KO));
+
+			swapInfoExpected(valConnectionFactoryUrl);
+			assertEqualsToLog(valConnectionFactoryUrl, result.getConnectionFactoryUrl(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(valRequestQueueName);
+			assertEqualsToLog(valRequestQueueName, result.getRequestQueueName(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(valJmsMessageText);
+			assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(objJmsMessageFile.getPath());
+			assertEqualsToLog(objJmsMessageFile, result.getMessageFile(), getEndTestLog(TEST_AND_KO));
+			swapInfoExpected(EXP_TRUE.toString());
+			assertTrueToLog(result.isSuccessful(), getEndTestLog(TEST_AND_KO));
+
+			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);

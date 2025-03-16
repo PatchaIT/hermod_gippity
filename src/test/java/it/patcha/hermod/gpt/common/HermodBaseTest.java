@@ -117,7 +117,9 @@ public abstract class HermodBaseTest extends AssertWrapper {
 	protected final String argReplyQueueName = Args.REPLY_QUEUE_NAME.toString();
 	protected final String valReplyQueueName = "testReplyQueue";
 	protected final String argJmsMessageText = Args.JMS_MESSAGE_TEXT.toString();
-	protected final String valJmsMessageText = "Hello, World!";
+	protected final String valJmsMessageText1 = "Hello,";
+	protected final String valJmsMessageText2 = "World!";
+	protected final String valJmsMessageText = valJmsMessageText1 + " " + valJmsMessageText2;
 	protected final String argJmsMessageFilePath = Args.JMS_MESSAGE_FILE_PATH.toString();
 	protected final String valJmsMessageFilePath = "message.test";
 	protected final File objJmsMessageFile = new File(valJmsMessageFilePath);
