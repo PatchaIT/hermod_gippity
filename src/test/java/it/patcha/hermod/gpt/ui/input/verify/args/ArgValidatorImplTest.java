@@ -17,9 +17,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_CONTAINS;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_EXCEPTION;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NOT_NULL;
+import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_NULL;
 import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.EXP_TRUE;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_KO;
-import static it.patcha.hermod.gpt.common.HermodBaseTest.TestOutcome.TEST_AND_OK;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.INVALID_DATA_TYPE;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR03;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR04;
@@ -85,7 +84,7 @@ class ArgValidatorImplTest extends HermodBaseTest {
 	}
 
 	@Test
-	void testValidateArgs_OK(TestInfo testInfo) throws Exception {
+	void testValidateArgs_TextSecondLastOK(TestInfo testInfo) throws Exception {
 		try {
 			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
 			logger.debug(getStartTestLog());
@@ -107,6 +106,18 @@ class ArgValidatorImplTest extends HermodBaseTest {
 
 			logger.debug("{}{}", getEndTestLogOK(), result);
 
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_TextVeryLastOK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
 			// Test with -text option as last option
 			args = new String[]{
 					argConnectionFactoryUrl, valConnectionFactoryUrl,
@@ -116,21 +127,91 @@ class ArgValidatorImplTest extends HermodBaseTest {
 			};
 			argsBean.setArgs(args);
 
-			result = validator.validateArgs(argsBean);
-			assertNotNullToLog(result, getEndTestLog(TEST_AND_KO));
+			ArgsBean result = validator.validateArgs(argsBean);
+			assertNotNullToLog(result, getEndTestLogKO());
 
 			swapInfoExpected(valConnectionFactoryUrl);
-			assertEqualsToLog(valConnectionFactoryUrl, result.getConnectionFactoryUrl(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(valConnectionFactoryUrl, result.getConnectionFactoryUrl(), getEndTestLogKO());
 			swapInfoExpected(valRequestQueueName);
-			assertEqualsToLog(valRequestQueueName, result.getRequestQueueName(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(valRequestQueueName, result.getRequestQueueName(), getEndTestLogKO());
 			swapInfoExpected(valJmsMessageText);
-			assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLogKO());
 			swapInfoExpected(objJmsMessageFile.getPath());
-			assertEqualsToLog(objJmsMessageFile, result.getMessageFile(), getEndTestLog(TEST_AND_KO));
+			assertEqualsToLog(objJmsMessageFile, result.getMessageFile(), getEndTestLogKO());
 			swapInfoExpected(EXP_TRUE.toString());
-			assertTrueToLog(result.isSuccessful(), getEndTestLog(TEST_AND_KO));
+			assertTrueToLog(result.isSuccessful(), getEndTestLogKO());
 
-			logger.debug("{}{}", getEndTestLog(TEST_AND_OK), result);
+			logger.debug("{}{}", getEndTestLogOK(), result);
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_TextOnlyOK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			args = new String[]{
+					argConnectionFactoryUrl, valConnectionFactoryUrl,
+					argRequestQueueName, valRequestQueueName,
+					argJmsMessageText, valJmsMessageText1, valJmsMessageText2
+			};
+			argsBean.setArgs(args);
+
+			ArgsBean result = validator.validateArgs(argsBean);
+			assertNotNullToLog(result, getEndTestLogKO());
+
+			swapInfoExpected(valConnectionFactoryUrl);
+			assertEqualsToLog(valConnectionFactoryUrl, result.getConnectionFactoryUrl(), getEndTestLogKO());
+			swapInfoExpected(valRequestQueueName);
+			assertEqualsToLog(valRequestQueueName, result.getRequestQueueName(), getEndTestLogKO());
+			swapInfoExpected(valJmsMessageText);
+			assertEqualsToLog(valJmsMessageText, result.getMessageText(), getEndTestLogKO());
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getMessageFile(), getEndTestLogKO());
+			swapInfoExpected(EXP_TRUE.toString());
+			assertTrueToLog(result.isSuccessful(), getEndTestLogKO());
+
+			logger.debug("{}{}", getEndTestLogOK(), result);
+
+		} catch (Exception e) {
+			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);
+			throw e;
+		}
+	}
+
+	@Test
+	void testValidateArgs_FileOnlyOK(TestInfo testInfo) throws Exception {
+		try {
+			enrichTestInfo(testInfo, EXP_NOT_NULL.toString());
+			logger.debug(getStartTestLog());
+
+			args = new String[]{
+					argConnectionFactoryUrl, valConnectionFactoryUrl,
+					argRequestQueueName, valRequestQueueName,
+					argJmsMessageFilePath, valJmsMessageFilePath
+			};
+			argsBean.setArgs(args);
+
+			ArgsBean result = validator.validateArgs(argsBean);
+			assertNotNullToLog(result, getEndTestLogKO());
+
+			swapInfoExpected(valConnectionFactoryUrl);
+			assertEqualsToLog(valConnectionFactoryUrl, result.getConnectionFactoryUrl(), getEndTestLogKO());
+			swapInfoExpected(valRequestQueueName);
+			assertEqualsToLog(valRequestQueueName, result.getRequestQueueName(), getEndTestLogKO());
+			swapInfoExpected(EXP_NULL.toString());
+			assertNullToLog(result.getMessageText(), getEndTestLogKO());
+			swapInfoExpected(objJmsMessageFile.getPath());
+			assertEqualsToLog(objJmsMessageFile, result.getMessageFile(), getEndTestLogKO());
+			swapInfoExpected(EXP_TRUE.toString());
+			assertTrueToLog(result.isSuccessful(), getEndTestLogKO());
+
+			logger.debug("{}{}", getEndTestLogOK(), result);
 
 		} catch (Exception e) {
 			logger.error("{}{}", getEndTestLogKO(), e.getClass().getSimpleName(), e);

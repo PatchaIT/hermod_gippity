@@ -92,6 +92,7 @@ public class HermodConstants {
 	public static final String OUTCOME_ERROR = "{} : {} : {}";
 
 	// Console messages
+	public static final String ARGS_RECAP_LOG = "Reading arguments = {}";
 	public static final String MAIN_POSITIVE_LOG = "Positively ended.";
 	public static final String MAIN_NEGATIVE_LOG = "Ended with issues, please check logs.";
 	public static final String ERROR_NEGATIVE_LOG = "Error : {}";

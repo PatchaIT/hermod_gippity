@@ -19,6 +19,9 @@ public enum ErrorType {
 	/** Main Usage Message: Sorry, the Graphical User Interface has not been implemented yet */
 	UI02("UI", 2,
 			"GUI: Sorry, the Graphical User Interface has not been implemented yet."),
+	/** Main Usage Message: UI01 triggered for one of such values is null (list follows) */
+	UI03("UI", 3,
+			"UI01 triggered for one of such values is null: connectionFactoryUrl = <{}> ; requestQueueName = <{}> ; messageText = <{}> or messageFilePath = <{}>"),
 
 	/** JobDispatcherException: Parameter null */
 	JD01("JD", 1, "dispatcherInput parameter cannot be null"),

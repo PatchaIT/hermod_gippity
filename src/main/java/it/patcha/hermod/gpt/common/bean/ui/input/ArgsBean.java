@@ -39,7 +39,10 @@ public class ArgsBean extends HermodBean {
 	}
 
 	public void setMessageFilePath(String messageFilePath) {
-		this.messageFile = new File(messageFilePath);
+		if (messageFilePath != null)
+			this.messageFile = new File(messageFilePath);
+		else
+			this.messageFile = null;
 	}
 
 	@Override

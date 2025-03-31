@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import static it.patcha.hermod.gpt.common.constant.HermodConstants.ARGS_RECAP_LOG;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.ERROR_NEGATIVE_LOG;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.ERROR_UNEXPECTED_LOG;
 import static it.patcha.hermod.gpt.common.constant.HermodConstants.OUTCOME_ERROR;
@@ -35,6 +36,8 @@ public class HermodGippity {
 	 * @param args The command line arguments.
 	 */
 	public static void main(String[] args) {
+		logger.info(ARGS_RECAP_LOG, (Object) args);
+
 		ApplicationContext context = HermodUtils.getContext(SpringConfig.class);
 		HermodGippity hermodGippity = context.getBean(HermodGippity.class);
 		int result = hermodGippity.run(args);

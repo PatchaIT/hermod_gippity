@@ -14,6 +14,7 @@ import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR04;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.IR99;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.UI01;
 import static it.patcha.hermod.gpt.common.error.codes.ErrorType.UI02;
+import static it.patcha.hermod.gpt.common.error.codes.ErrorType.UI03;
 
 /** Implementation of MessageSenderTaskExecutor in charge of validating for {@link ArgInfoReader}. */
 @Component
@@ -96,8 +97,10 @@ public class ArgValidatorImpl extends BaseValidator implements ArgValidator {
 		if (gui)
 			throw new ValidatorException(UI02, this.getClass());
 
-		if (connectionFactoryUrl == null || requestQueueName == null || messageText == null)
+		if (connectionFactoryUrl == null || requestQueueName == null || (messageText == null && messageFilePath == null)) {
+			logger.error(UI03.getMessage(), connectionFactoryUrl, requestQueueName, messageText, messageFilePath);
 			throw new ValidatorException(UI01, this.getClass());
+		}
 
 		argsBean.setConnectionFactoryUrl(connectionFactoryUrl);
 		argsBean.setRequestQueueName(requestQueueName);
